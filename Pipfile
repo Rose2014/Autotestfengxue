@@ -1,0 +1,26 @@
+[[source]]
+url = "https://mirrors.aliyun.com/pypi/simple/"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pytest = "*"
+loguru = "*"
+pytest-rerunfailures = "*"
+yagmail = "*"
+allure-pytest = "*"
+pytest-playwright = "*"
+pyyaml = "*"
+pymysql = "*"
+sshtunnel = "*"
+pipreqs = "*"
+pytest-ordering = "*"
+pathvalidate = "*"
+pycryptodome = "*"
+jsonpath = "*"
+faker = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
