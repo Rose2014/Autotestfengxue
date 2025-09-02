@@ -85,8 +85,6 @@ class TestSystemManager:
         system_manager_page.search_user(userid)
         page.wait_for_timeout(2000)
         system_manager_page.assert_user(userid)
-        # system_manager_page.search_user("AutoTestUI20250822172901")
-        # system_manager_page.assert_user("AutoTestUI20250822172901")
         page.wait_for_timeout(5000)
 
 

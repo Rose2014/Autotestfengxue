@@ -25,58 +25,13 @@ ENV_VARS = {
         # 默认测试账号 - 已绑定手机号码
         "default_user_login": "erdcadmin",
         "default_user_password": "Pw!123456",
-        "default_user_nickname": "",
-        "default_user_id": 0,
-        # 超级管理员
-        "admin_user_login": "etrxadmin",
-        "admin_user_password": "Elead@fam",
-        "admin_user_nickname": "",
-        "admin_user_id": 0,
-        # 未绑定手机号码
-        "user1_login": "",
-        "user1_password": "",
-        "user1_nickname": "",
-        "user1_user_id": 0,
-        # 密码错误
-        "user2_login": "",
-        "user2_password": "",
-        "user2_nickname": "",
-        "user2_user_id": 0,
-        # 测试仓库
-        "env_project_id": "",
-        "env_repo_id": "",
-        "env_repo_owner": "",
-        "env_repo_identifier": ""
-
     },
     "live": {
         # 测试环境域名
-        "host": "",
-        # 默认测试账号 - 已绑定手机号码
-        "default_user_login": "",
-        "default_user_password": "",
-        "default_user_nickname": "",
-        "default_user_id": 0,
-        # 超级管理员
-        "admin_user_login": "",
-        "admin_user_password": "",
-        "admin_user_nickname": "",
-        "admin_user_id": 0,
-        # 未绑定手机号码
-        "user1_login": "",
-        "user1_password": "",
-        "user1_nickname": "",
-        "user1_user_id": 0,
-        # 密码错误
-        "user2_login": "",
-        "user2_password": "",
-        "user2_nickname": "",
-        "user2_user_id": 0,
-        # 测试仓库
-        "env_project_id": "",
-        "env_repo_id": "",
-        "env_repo_owner": "",
-        "env_repo_identifier": ""
+        "host": "http://cbb-sit-1.apps.paas.szcp.ddns.e-lead.cn/",
+        # 默认测试账号
+        "default_user_login": "erdcadmin",
+        "default_user_password": "Pw!123456",
     }
 }
 
