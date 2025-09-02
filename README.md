@@ -80,7 +80,7 @@
 
 ## 依赖库
 ```
-pytest = "==6.2.5"
+pytest = "*"
 loguru = "*"
 pytest-rerunfailures = "*"
 faker = "*"

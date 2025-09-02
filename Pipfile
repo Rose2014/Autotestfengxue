@@ -4,12 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pytest = "*"
-loguru = "*"
 pytest-rerunfailures = "*"
-yagmail = "*"
-allure-pytest = "*"
-pytest-playwright = "*"
 pyyaml = "*"
 pymysql = "*"
 sshtunnel = "*"
@@ -19,6 +14,10 @@ pathvalidate = "*"
 pycryptodome = "*"
 jsonpath = "*"
 faker = "*"
+pytest = "*"
+allure-pytest = "*"
+pytest-playwright = "*"
+loguru = "*"
 
 [dev-packages]
 

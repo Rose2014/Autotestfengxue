@@ -8,7 +8,6 @@ import hashlib
 import base64
 import urllib.parse
 import time
-import urllib.request
 from requests import request
 from loguru import logger
 

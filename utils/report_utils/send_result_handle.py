@@ -13,7 +13,6 @@ from utils.data_utils.data_handle import data_handle
 from utils.report_utils.get_results_handle import get_test_results_from_from_allure_report
 from utils.notify_utils.dingding_bot import DingTalkBot
 from utils.notify_utils.wechat_bot import WechatBot
-from utils.notify_utils.yagmail_bot import YagEmailServe
 from utils.notify_utils.email_sender import EmailSender
 
 def send_email(user, pwd, host, subject, content, to, attachments):
@@ -43,24 +42,6 @@ def send_email(user, pwd, host, subject, content, to, attachments):
         )
     except Exception as e:
         logger.error(f"发送邮件通知异常， 错误信息：{e}")
-
-def send_email1(user, pwd, host, subject, content, to, attachments):
-    """
-    发送邮件
-    """
-    try:
-        yag = YagEmailServe(user=user, password=pwd, host=host)
-        info = {
-            "subject": subject,
-            "contents": content,
-            "to": to,
-            "attachments": attachments
-
-        }
-        yag.send_email(info)
-    except Exception as e:
-        logger.error(f"发送邮件通知异常， 错误信息：{e}")
-
 
 def send_dingding(webhook_url, secret, title, content):
     """
