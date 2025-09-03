@@ -100,7 +100,7 @@ def run(**kwargs):
 if __name__ == '__main__':
     # 定义命令行参数
     parser = argparse.ArgumentParser(description="框架主入口")
-    parser.add_argument("-env", default="test", help="输入运行环境：test 或 live")
+    parser.add_argument("-env", default=ENV_VARS["common"]["env"], help="输入运行环境：test 或 live")
     parser.add_argument("-m", help="选择需要运行的用例：python.ini配置的名称")
     parser.add_argument("-browser", nargs='*', help="浏览器驱动类型配置，支持如下类型：chromium, firefox, webkit")
     parser.add_argument("-mode", help="浏览器驱动类型配置，支持如下类型：headless, headed")

@@ -10,7 +10,7 @@ from typing import Union, Pattern, Optional, Literal, AnyStr
 # 第三方库导入
 import allure
 from loguru import logger
-from playwright.sync_api import Page
+from playwright.sync_api import Page, Locator
 from playwright.sync_api import expect
 
 
@@ -86,14 +86,18 @@ class BasePage:
 
     # --------------------------------- 页面操作和交互---------------------------------#
     @allure.step("--> 点击元素 | 元素定位：{locator}")
-    def click(self, locator: str) -> None:
+    def click(self, locator: Union[str,Locator]) -> None:
         """
         点击操作
         :param locator: 元素定位
         """
         try:
             logger.info(f"--> 点击元素 | 元素定位：{locator}")
-            self.page.click(locator)
+            if isinstance(locator, str):
+                self.page.click(locator)
+            elif isinstance(locator, Locator):
+                locator.click()
+
         except Exception as e:
             logger.error(f"--> 点击元素 | 元素定位：{locator}，报错：{e}")
             raise f"--> 点击元素 | 元素定位：{locator}，报错：{e}"
@@ -209,7 +213,7 @@ class BasePage:
         self.page.press(locator, keyboard)
 
     @allure.step("--> 截图， 全屏={full_page} | 元素定位： {locator}， 图片保存路径：{path}")
-    def screenshot(self, path, full_page=True, locator=None):
+    def screenshot(self, path, full_page=True, locator:str=None):
         """截图功能，默认截取全屏，如果传入定位器表示截取元素"""
         if locator is not None:
             logger.info(f"--> 截图， 全屏={full_page} | 元素定位： {locator}， 图片保存路径：{path}")
@@ -258,7 +262,7 @@ class BasePage:
             raise e
 
     @allure.step("--> 获取所有符合定位要求的元素的文本内容 | 元素定位： {locator}")
-    def get_all_elements_text(self, locator) -> Union[list, None]:
+    def get_all_elements_text(self, locator:str) -> Union[list, None]:
         """
         获取所有符合定位要求的元素的文本内容
         :param locator: 元素定位
@@ -652,7 +656,3 @@ class BasePage:
         • element_handle.is_visible()
     """
 
-    @allure.step("-->  验证元素是否可见/存在：  元素定位： {locator}")
-    def is_element_visible(self,locator: str):
-        actual_value = self.page.is_visible(locator)
-        return actual_value

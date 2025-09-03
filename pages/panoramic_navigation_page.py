@@ -14,7 +14,7 @@ from utils.base_utils.base_page import BasePage
 
 class PanoramicNavigationPage(BasePage):
     #homepage 标识
-    locator_page_home_tip = "//div[text()='仪表盘']"
+    locator_page_home_tip = "//img[@class='logo-img']"
     #进入全景导航 【更多>>】定位
     locator_page_in_panoramic_navigation_more = "//div[contains(text(),'更多>>')]"
     #收藏更多导航

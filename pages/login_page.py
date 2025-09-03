@@ -31,11 +31,7 @@ class LoginPage(BasePage):
         """
         确定是登录页面
         """
-        actual_value = self.is_element_visible(self.locator_page_login_tip)
-        if actual_value:
-            allure.step("--->进入登录页面")
-        else:
-            allure.step("--->没有进入登录页面")
+        self.is_element_visible(self.locator_page_login_tip)
 
     @allure.step("网页登录：输入用户名：{login}")
     def input_username_on_page(self, login):

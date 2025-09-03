@@ -1,8 +1,6 @@
 """
 @FileName：aes_encrypt_decrypt.py
 @Description：
-@Author：Floraachy
-@Time：2024/11/22 14:48
 """
 
 """
