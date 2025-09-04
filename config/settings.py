@@ -15,7 +15,7 @@ ENV_VARS = {
         "项目名称": "ERTX易特克思",
         "tester": "终验测试组",
         "department": "产品管理中心",
-        "env": "test"
+        "env": "live"
     },
     "test": {
         # 测试环境域名

@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/playwright/python:v1.40.0-focal
-# 内置python版本是3.8
+# 内置python版本是3.9
 
 #设置时区
 RUN echo "Asia/Shanghai" > /etc/timezone
@@ -32,7 +32,7 @@ RUN sed -i "s/\*\*\*\*autotest-test\*\*\*\*/你的测试账号的密码/g" confi
 RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pipenv
 
 # 安装依赖
-RUN pipenv install --python 3.8 --skip-lock
+RUN pipenv install --python 3.9 --skip-lock
 
 # 运行自动化测试
 CMD ["pipenv", "run", "python", "run.py"]

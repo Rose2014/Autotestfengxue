@@ -25,7 +25,7 @@ class LoginPage(BasePage):
         """
         访问登录页面
         """
-        self.visit(GLOBAL_VARS.get("host")+"#/erdc-login-erdcloud")
+        self.visit("#/erdc-login-erdcloud")
 
     def is_login_page(self):
         """

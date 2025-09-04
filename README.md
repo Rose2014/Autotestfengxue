@@ -44,7 +44,7 @@
 │    │    ├────__init__.py
 │    │    ├────dingding_bot.py
 │    │    ├────wechat_bot.py
-│    │    └────yagmail_bot.py
+│    │    └────email_sender.py
 │    ├────report_utils/  报告处理
 │    │    ├────__init__.py
 │    │    ├────allure_handle.py

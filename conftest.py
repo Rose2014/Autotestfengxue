@@ -17,6 +17,7 @@ from config.path_config import REPORT_DIR
 from config.global_vars import GLOBAL_VARS
 from utils.data_utils.data_handle import data_handle
 
+start_time = 0.0
 # 本地插件注册
 pytest_plugins = ['plugins.pytest_playwright']  # noqa
 """
@@ -55,6 +56,10 @@ def pytest_configure(config):
     """
     config.option.base_url = GLOBAL_VARS.get("host")
 
+
+def pytest_sessionstart(session):
+    global start_time
+    start_time = time.time()  # 记录会话开始时间
 
 def pytest_runtest_call(item):  # noqa
     # 动态添加测试类的 allure.feature()， 注意测试类一定要写文档注释，否则这里会显示为空
@@ -103,25 +108,17 @@ def pytest_terminal_summary(terminalreporter, config):
     _XPASSED = len([i for i in terminalreporter.stats.get('xpassed', []) if i.when != 'teardown'])
     _XFAILED = len([i for i in terminalreporter.stats.get('xfailed', []) if i.when != 'teardown'])
 
-    # 修复_TOTAL和_DURATION的计算，使用兼容的方式
+    # 修复_TOTAL使用兼容的方式
     try:
         _TOTAL = terminalreporter._numcollected
     except AttributeError:
         # 如果无法获取_numcollected，使用统计的总数
         _TOTAL = _PASSED + _FAILED + _SKIPPED + _XPASSED + _XFAILED + _ERROR + _RERUN
 
-    try:
-        _DURATION = time.time() - terminalreporter._session.starttime
-        session_start_time = datetime.fromtimestamp(terminalreporter._session.starttime)
-        _START_TIME = f"{session_start_time.year}年{session_start_time.month}月{session_start_time.day}日 " \
-                      f"{session_start_time.hour}:{session_start_time.minute}:{session_start_time.second}"
-    except AttributeError as e:
-        logger.error(f'ERROR-->pytest_terminal_summary：{e}')
-        # 如果无法获取_sessionstarttime，使用当前时间作为替代
-        _DURATION = 0
-        current_time = datetime.now()
-        _START_TIME = f"{current_time.year}年{current_time.month}月{current_time.day}日 " \
-                      f"{current_time.hour}:{current_time.minute}:{current_time.second}"
+    _DURATION = time.time() - start_time
+    session_start_time = datetime.fromtimestamp(start_time)
+    _START_TIME = f"{session_start_time.year}年{session_start_time.month}月{session_start_time.day}日 " \
+                    f"{session_start_time.hour}:{session_start_time.minute}:{session_start_time.second}"
 
     test_info = f"各位同事, 大家好:\n" \
                 f"自动化用例于 {_START_TIME}- 开始运行，运行时长：{_DURATION:.2f} s， 目前已执行完成。\n" \

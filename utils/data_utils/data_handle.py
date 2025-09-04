@@ -90,7 +90,7 @@ class DataHandle:
         keys = {}
 
         source = {} if not source or not isinstance(source, dict) else source
-        logger.trace(f"source={source}")
+        # logger.trace(f"source={source}")
 
         # 处理一下source，检测到里面存在RequestsCookieJar，转成dict，再转换成JSON 格式的字符串（序列化）。
         # 避免传递过来一个RequestsCookieJar，替换后变成了'RequestsCookieJar'，导致cookies无法使用的问题

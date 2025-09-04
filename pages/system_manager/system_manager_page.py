@@ -8,6 +8,8 @@
 import allure
 from playwright.sync_api import expect
 from loguru import logger
+
+from config.global_vars import GLOBAL_VARS
 # 本地应用/模块导入
 from utils.base_utils.base_page import BasePage
 
@@ -46,7 +48,12 @@ class SystemManagerPage(BasePage):
     #取消按钮
     locator_page_user_cancel_btn = "(//button/span[text()='取消'])[2]"
 
-
+    @allure.step("访问系统管理页面：/system-participant/member?_s=SystemManagement")
+    def navigate(self):
+        """
+        访问系统管理页面
+        """
+        self.visit("#/system-participant/member?_s=SystemManagement")
 
     @allure.step("点击【成员】页签")
     def click_members(self) -> None:
@@ -154,13 +161,13 @@ class SystemManagerPage(BasePage):
         """
         点击确定按钮
         """
-        # locator_ok_btn = self.page.get_by_text("确定")
-        self.click(self.locator_page_user_ok_btn)
+        locator_ok_btn = self.page.get_by_role("button", name="确定")
+        self.click(locator_ok_btn)
 
     @allure.step("点击取消按钮")
     def click_cancel_btn(self) -> None:
         """
         点击取消按钮
         """
-        locator_cancel_btn = self.page.get_by_text("取消")
+        locator_cancel_btn = self.page.get_by_role("button", name="取消")
         self.click(locator_cancel_btn)

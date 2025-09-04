@@ -103,40 +103,68 @@ class BasePage:
             raise f"--> 点击元素 | 元素定位：{locator}，报错：{e}"
 
     @allure.step("--> checkbox勾选元素 | 元素定位： {locator}")
-    def check(self, locator: str) -> None:
+    def check(self, locator: Union[str,Locator]) -> None:
         """
         勾选checkbox
         :param locator: 元素定位
         """
-        logger.info(f"--> checkbox勾选元素 | 元素定位：{locator}")
-        self.page.check(locator)
+        try:
+            logger.info(f"--> checkbox勾选元素 | 元素定位：{locator}")
+            if isinstance(locator, str):
+                self.page.check(locator)
+            elif isinstance(locator, Locator):
+                locator.check()
+        except Exception as e:
+            logger.error(f"--> checkbox勾选元素 | 元素定位：{locator}，报错：{e}")
+            raise f"--> checkbox勾选元素 | 元素定位：{locator}，报错：{e}"
 
     @allure.step("--> checkbox取消勾选元素 | 元素定位： {locator}")
-    def uncheck(self, locator: str) -> None:
+    def uncheck(self, locator: Union[str,Locator]) -> None:
         """
         取消勾选checkbox
         :param locator: 元素定位
         """
-        logger.info(f"--> checkbox取消勾选元素 | 元素定位： {locator}")
-        self.page.uncheck(locator)
+        try:
+            logger.info(f"--> checkbox取消勾选元素 | 元素定位： {locator}")
+            if isinstance(locator, str):
+                self.page.uncheck(locator)
+            elif isinstance(locator, Locator):
+                locator.uncheck()
+        except Exception as e:
+            logger.error(f"--> checkbox取消勾选元素 | 元素定位：{locator}，报错：{e}")
+            raise f"--> checkbox取消勾选元素 | 元素定位： {locator}，报错：{e}"
 
     @allure.step("--> 鼠标悬浮在元素上，元素定位： {locator}")
-    def hover(self, locator: str) -> None:
+    def hover(self, locator: Union[str,Locator]) -> None:
         """
         悬浮在某元素上
         :param locator: 元素定位
         """
-        logger.info(f"--> 鼠标悬浮在元素上，元素定位： {locator}")
-        self.page.hover(locator)
+        try:
+            logger.info(f"--> 鼠标悬浮在元素上，元素定位： {locator}")
+            if isinstance(locator, str):
+                self.page.hover(locator)
+            elif isinstance(locator, Locator):
+                locator.hover()
+        except Exception as e:
+            logger.error(f"--> 鼠标悬浮在元素上 | 元素定位：{locator}，报错：{e}")
+            raise f"--> 鼠标悬浮在元素上 | 元素定位： {locator}，报错：{e}"
 
     @allure.step("--> 聚焦定位元素，元素定位： {locator}")
-    def focus(self, locator):
+    def focus(self, locator:Union[str,Locator]) -> None:
         """ 聚焦定位元素 """
-        logger.debug(f'--> 聚焦定位元素，元素定位： {locator}')
-        self.page.focus(locator)
+        try:
+            logger.debug(f'--> 聚焦定位元素，元素定位： {locator}')
+            if isinstance(locator, str):
+                self.page.focus(locator)
+            elif isinstance(locator, Locator):
+                locator.focus()
+        except Exception as e:
+            logger.error(f"--> 聚焦定位元素 | 元素定位：{locator}，报错：{e}")
+            raise f"--> 聚焦定位元素 | 元素定位： {locator}，报错：{e}"
 
     @allure.step("--> 输入内容： {text} | 元素定位： {locator}")
-    def input(self, locator: str, text: str) -> None:
+    def input(self, locator: Union[str,Locator], text: str) -> None:
         """
         输入内容
         :param locator: 元素定位
@@ -144,39 +172,63 @@ class BasePage:
         """
         try:
             logger.info(f"--> 输入内容： {text} | 元素定位： {locator}")
-            self.page.fill(selector=locator, value=text)
+            if isinstance(locator, str):
+                self.page.fill(selector=locator, value=text)
+            elif isinstance(locator, Locator):
+                locator.fill(text)
         except Exception as e:
             logger.error(f"--> 输入内容： {text} | 元素定位： {locator}， 报错：{e}")
             raise f"--> 输入内容： {text} | 元素定位： {locator}， 报错：{e}"
 
     @allure.step("--> 键盘键入内容： {text} | 元素定位： {locator}")
-    def type(self, locator: str, text: str) -> None:
+    def type(self, locator: Union[str,Locator], text: str) -> None:
         """
         一个字符一个字符的输入,模拟键盘的操作，键入内容
         :param locator: 元素定位
         :param text: 输入的内容
         """
-        logger.info(f"--> 键盘键入内容： {text} | 元素定位： {locator}")
-        self.page.type(selector=locator, text=text)
+        try:
+            logger.info(f"--> 键盘键入内容： {text} | 元素定位： {locator}")
+            if isinstance(locator, str):
+                self.page.type(selector=locator, text=text)
+            elif isinstance(locator, Locator):
+                locator.type(text)
+        except Exception as e:
+            logger.error(f"--> 键盘键入内容： {text} | 元素定位： {locator}， 报错：{e}")
+            raise f"--> 键盘键入内容： {text} | 元素定位： {locator}， 报错：{e}"
 
     @allure.step("--> 清除元素内容，元素定位： {locator}")
-    def clear(self, locator: str):
-        self.page.locator(locator).click()
+    def clear(self, locator: Union[str,Locator]) -> None:
         try:
             logger.info(f'--> 清除元素内容，元素定位： {locator}')
-            self.page.locator(locator).clear()
+            if isinstance(locator, str):
+                self.page.locator(locator).click()
+                self.page.locator(locator).clear()
+            elif isinstance(locator, Locator):
+                locator.click()
+                locator.clear()
+
         except Exception as e:
-            logger.error(f'ERROR-->清除失败：{e}')
+            logger.error(f"--> 清除元素内容 | 元素定位： {locator}， 报错：{e}")
+            raise f"--> 清除元素内容 | 元素定位： {locator}， 报错：{e}"
 
     @allure.step("--> 选择选项： {option} | 元素定位： {locator}")
-    def select_option(self, locator: str, option: str) -> None:
+    def select_option(self, locator: Union[str,Locator], option: str) -> None:
         """
         选择option
         :param locator: 元素定位
         :param option: 选项内容
         """
-        logger.info(f"--> 选择选项： {option} | 元素定位： {locator}")
-        self.page.select_option(selector=locator, value=option)
+        try:
+            logger.info(f"--> 选择选项： {option} | 元素定位： {locator}")
+            if isinstance(locator, str):
+                self.page.select_option(selector=locator, value=option)
+            elif isinstance(locator, Locator):
+                locator.select_option(option)
+
+        except Exception as e:
+            logger.error(f"--> 选择选项： {option} | 元素定位： {locator}， 报错：{e}")
+            raise f"--> 选择选项： {option} | 元素定位： {locator}， 报错：{e}"
 
     @allure.step("--> 上传文件： {file_path} | 元素定位： {locator}")
     def upload_file(self, locator: str, file_path: str) -> None:
@@ -204,13 +256,20 @@ class BasePage:
         self.page.evaluate(js, *args)
 
     @allure.step("--> 按{keyboard}键 | 元素定位： {locator}")
-    def press(self, locator: str, keyboard: str) -> None:
+    def press(self, locator: Union[str,Locator], keyboard: str) -> None:
         """
         :param locator: 元素定位
         :param keyboard: 键
         """
-        logger.info(f"--> 按{keyboard}键 | 元素定位： {locator}")
-        self.page.press(locator, keyboard)
+        try:
+            logger.info(f"--> 按{keyboard}键 | 元素定位： {locator}")
+            if isinstance(locator, str):
+                self.page.press(locator, keyboard)
+            elif isinstance(locator, Locator):
+                locator.press(keyboard)
+        except Exception as e:
+            logger.error(f"--> 按{keyboard}键 | 元素定位： {locator}， 报错：{e}")
+            raise f"--> 按{keyboard}键 | 元素定位： {locator}， 报错：{e}"
 
     @allure.step("--> 截图， 全屏={full_page} | 元素定位： {locator}， 图片保存路径：{path}")
     def screenshot(self, path, full_page=True, locator:str=None):
@@ -244,7 +303,7 @@ class BasePage:
             raise e
 
     @allure.step("--> 获取元素文本值 | 元素定位： {locator}")
-    def get_text(self, locator: str) -> Union[str, None]:
+    def get_text(self, locator: Union[str,Locator]) -> Union[str, None]:
 
         """
         获取元素的文本内容
@@ -253,7 +312,11 @@ class BasePage:
         """
         try:
             logger.info(f"--> 获取元素文本值 | 元素定位： {locator}")
-            text_value = self.page.locator(locator).text_content()
+            text_value = ""
+            if isinstance(locator, str):
+                text_value = self.page.locator(locator).text_content()
+            elif isinstance(locator, Locator):
+                text_value =locator.text_content()
             logger.success(f"--> 获取到的文本值： {text_value}")
             allure.attach(text_value, name="text_value", attachment_type=allure.attachment_type.TEXT)
             return text_value
@@ -280,7 +343,7 @@ class BasePage:
             raise e
 
     @allure.step("--> 根据元素的属性获取对应属性值 | 元素定位： {locator}, 属性名称：{attr_name}")
-    def get_element_attribute(self, locator: str, attr_name: str) -> Union[str, None]:
+    def get_element_attribute(self, locator: Union[str,Locator], attr_name: str) -> Union[str, None]:
         """
         获取元素属性值
         :param locator: 元素定位
@@ -289,7 +352,11 @@ class BasePage:
         """
         try:
             logger.info(f"--> 根据元素的属性获取对应属性值 | 元素定位： {locator}, 属性名称：{attr_name}")
-            attr_value = self.page.locator(locator).get_attribute(name=attr_name)
+            attr_value = ""
+            if isinstance(locator,str):
+                attr_value = self.page.locator(locator).get_attribute(name=attr_name)
+            elif isinstance(locator, Locator):
+                attr_value = locator.get_attribute(name=attr_name)
             logger.success(f"--> 获取到的属性值：{attr_value}")
             allure.attach(attr_value, name="attr_value", attachment_type=allure.attachment_type.TEXT)
             return attr_value
@@ -298,7 +365,7 @@ class BasePage:
             return None
 
     @allure.step("--> 获取元素的文本内容 | 元素定位： {locator}")
-    def get_inner_text(self, locator: str) -> Union[str, None]:
+    def get_inner_text(self, locator: Union[str,Locator]) -> Union[str, None]:
         """
         获取元素的文本内容
         :param locator: 元素定位
@@ -306,7 +373,11 @@ class BasePage:
         """
         try:
             logger.info(f"--> 获取元素的文本内容 | 元素定位： {locator}")
-            text_value = self.page.inner_text(selector=locator)
+            text_value = ""
+            if isinstance(locator, str):
+                text_value = self.page.inner_text(selector=locator)
+            elif isinstance(locator, Locator):
+                text_value = locator.inner_text()
             logger.success(f"--> 获取到的元素文本内容：{text_value}")
             allure.attach(text_value, name="text_value", attachment_type=allure.attachment_type.TEXT)
             return text_value
@@ -315,7 +386,7 @@ class BasePage:
             return None
 
     @allure.step("--> 获取元素的整个html源码内容 | 元素定位： {locator}")
-    def get_inner_html(self, locator: str) -> Union[str, None]:
+    def get_inner_html(self, locator: Union[str,Locator]) -> Union[str, None]:
         """
         获取元素的整个html源码内容
         :param locator: 元素定位
@@ -323,7 +394,11 @@ class BasePage:
         """
         try:
             logger.info(f"--> 获取元素的整个html源码内容 | 元素定位： {locator}")
-            html_value = self.page.inner_html(selector=locator)
+            html_value = ""
+            if isinstance(locator, str):
+                html_value = self.page.inner_html(selector=locator)
+            elif isinstance(locator, Locator):
+                html_value = locator.inner_html()
             logger.success(f"--> 获取元素的整个html值：{html_value}")
             allure.attach(html_value, name="html_value", attachment_type=allure.attachment_type.TEXT)
             return html_value
@@ -402,13 +477,15 @@ class BasePage:
 
     # --------------------------------- 断言（可见与不可见） ---------------------------------#
     @allure.step("--> 断言 | 验证元素被可见 | 元素定位： {locator}")
-    def is_element_visible(self, locator: str) -> None:
+    def is_element_visible(self, locator: Union[str,Locator]) -> None:
         """
         断言：验证元素是否可见
         :param locator: 元素定位
         """
         logger.info(f"--> 断言 | 验证元素被可见 | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator,str):
+            elem = self.page.locator(locator)
         expect(elem).to_be_visible()
 
     # --------------------------------- 断言（常用的断言方法） ---------------------------------#
@@ -437,78 +514,92 @@ class BasePage:
     """
 
     @allure.step("--> 断言 | 验证元素checkbox被选中 | 元素定位： {locator}")
-    def is_checkbox_checked(self, locator: str) -> None:
+    def is_checkbox_checked(self, locator: Union[str,Locator]) -> None:
         """
         断言：验证复选框是否被选中
         :param locator: 元素定位
         """
         logger.info(f"--> 断言 | 验证元素checkbox被选中 | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator,str):
+            elem = self.page.locator(locator)
         expect(elem).to_be_checked()
 
     @allure.step("--> 断言 | 验证元素被禁用 | 元素定位： {locator}")
-    def is_element_disabled(self, locator: str) -> None:
+    def is_element_disabled(self, locator: Union[str,Locator]) -> None:
         """
         断言：验证元素是否被禁用
         :param locator: 元素定位
         """
         logger.info(f"--> 断言 | 验证元素被禁用 | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).to_be_disabled()
 
     @allure.step("--> 断言 | 验证输入框可编辑 | 元素定位： {locator}")
-    def is_input_editable(self, locator: str, timeout=5) -> None:
+    def is_input_editable(self, locator: Union[str,Locator], timeout=5) -> None:
         """
         断言：验证输入框是否可编辑
         :param locator: 元素定位
         :param timeout: 超时时间， 默认5000ms
         """
         logger.info(f"--> 断言 | 验证输入框可编辑 | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).to_be_editable(timeout=timeout * 1000)
 
     @allure.step("--> 断言 | 验证容器为空 | 元素定位： {locator}")
-    def is_container_empty(self, locator: str) -> None:
+    def is_container_empty(self, locator: Union[str,Locator]) -> None:
         """
         断言：验证容器是否为空
         :param locator: 元素定位
         """
         logger.info(f"--> 断言 | 验证容器为空 | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).to_be_empty()
 
     @allure.step("--> 断言 | 验证元素为启用状态 | 元素定位： {locator}")
-    def is_element_enabled(self, locator: str) -> None:
+    def is_element_enabled(self, locator: Union[str,Locator]) -> None:
         """
         断言：验证元素是否启用
         :param locator: 元素定位
         """
         logger.info(f"--> 断言 | 验证元素为启用状态 | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).to_be_enabled()
 
     @allure.step("--> 断言 | 验证元素获得焦点 | 元素定位： {locator}")
-    def is_element_focused(self, locator: str) -> None:
+    def is_element_focused(self, locator: Union[str,Locator]) -> None:
         """
         断言：验证元素是否获得焦点
         :param locator: 元素定位
         """
         logger.info(f"--> 断言 | 验证元素获得焦点 | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).to_be_focused()
 
     @allure.step("--> 断言 | 验证元素被隐藏 | 元素定位： {locator}")
-    def is_element_hidden(self, locator: str) -> None:
+    def is_element_hidden(self, locator: Union[str,Locator]) -> None:
         """
         断言：验证元素是否隐藏
         :param locator: 元素定位
         """
         logger.info(f"--> 断言 | 验证元素被隐藏 | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).to_be_hidden()
 
     @allure.step("--> 断言 | 验证输入框具有值(预期)： {value} | 元素定位： {locator}")
-    def is_input_have_value(self, locator: str, value: str, timeout=5) -> None:
+    def is_input_have_value(self, locator: Union[str,Locator], value: str, timeout=5) -> None:
         """
         断言：验证输入框是否具有指定的值
         :param locator: 元素定位
@@ -516,11 +607,13 @@ class BasePage:
         :param timeout: 超时时间， 默认5000ms
         """
         logger.info(f"--> 断言 | 验证元素具有值(预期)： {value} | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).to_have_value(value=value, timeout=timeout * 1000)
 
     @allure.step("--> 断言 | 验证输入框不具有值(预期)： {value} | 元素定位： {locator}")
-    def is_input_not_have_value(self, locator: str, value: str, timeout=5) -> None:
+    def is_input_not_have_value(self, locator: Union[str,Locator], value: str, timeout=5) -> None:
         """
         断言：验证输入框是否具有指定的值
         :param locator: 元素定位
@@ -528,97 +621,118 @@ class BasePage:
         :param timeout: 超时时间， 默认5000ms
         """
         logger.info(f"--> 断言 | 验证元素具有值(预期)： {value} | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).not_to_have_value(value=value, timeout=timeout * 1000)
 
     @allure.step("--> 断言 | 验证元素具有： {text} | 元素定位： {locator}")
-    def have_text(self, locator: str, text: str) -> None:
+    def have_text(self, locator: Union[str,Locator], text: str) -> None:
         """
         断言：验证元素是否具有指定的文本内容
         :param locator: 元素定位
         :param text: 文本内容
         """
         logger.info(f"--> 断言 | 验证元素具有： {text} | 元素定位： {locator}")
-        expect(self.page.locator(locator)).to_have_text(text)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
+        expect(elem).to_have_text(text)
 
     @allure.step("--> 断言 | 验证元素包含： {text} | 元素定位： {locator}")
-    def contain_text(self, locator: str, text: str) -> None:
+    def contain_text(self, locator: Union[str,Locator], text: str) -> None:
         """
         断言：验证元素是否包含指定的文本
         :param locator: 元素定位
         :param text: 文本内容
         """
         logger.info(f"--> 断言 | 验证元素包含： {text} | 元素定位： {locator}")
-        expect(self.page.locator(locator)).to_contain_text(text)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
+        expect(elem).to_contain_text(text)
 
     @allure.step("---> 断言 | 验证元素具有类属性(预期)： {class_name} | 元素定位： {locator}")
-    def is_element_have_class(self, locator: str, class_name: str) -> None:
+    def is_element_have_class(self, locator: Union[str,Locator], class_name: str) -> None:
         """
         断言：验证元素是否具有指定的类属性
         :param locator: 元素定位
         :param class_name: 预期类名称
         """
         logger.info(f"---> 断言 | 验证元素具有类属性(预期)： {class_name} | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).to_have_class(class_name)
 
     @allure.step("--> 断言 | 验证元素具有属性(预期)： {attr_name} | 元素定位： {locator}")
-    def is_element_have_attr(self, locator: str, attr_name: str) -> None:
+    def is_element_have_attr(self, locator: Union[str,Locator], attr_name: str) -> None:
         """
         断言：验证元素是否具有指定的属性
         :param locator: 元素定位
         :param attr_name: 预期元素属性名称
         """
         logger.info(f"--> 断言 | 验证元素具有属性(预期)： {attr_name} | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).to_have_attribute(attr_name)
 
     @allure.step("---> 断言 | 验证元素具有指定个数(预期)： {elem_count} | 元素定位： {locator}")
-    def is_element_count(self, locator: str, elem_count: int) -> None:
+    def is_element_count(self, locator: Union[str,Locator], elem_count: int) -> None:
         """
         断言：验证元素个数是否与期望值相等
         :param locator: 元素定位
         :param elem_count: 预期元素个数
         """
         logger.info(f"---> 断言 | 验证元素具有指定个数(预期)： {elem_count} | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).to_have_count(elem_count)
 
     @allure.step("---> 断言 | 验证元素具有CSS属性(预期)： {css_value} | 元素定位： {locator}")
-    def is_element_have_css(self, locator: str, css_value: Union[str, Pattern[str]]) -> None:
+    def is_element_have_css(self, locator: Union[str,Locator], css_value: Union[str, Pattern[str]]) -> None:
         """
         断言：验证元素个数是否与期望值相等
         :param locator: 元素定位
         :param css_value: css属性，接收str以及正则表达式， 例如"button"， 或者"display", "flex"
         """
         logger.info(f"---> 断言 | 验证元素具有CSS属性(预期)： {css_value} | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).to_have_css(css_value)
 
     @allure.step("---> 断言 | 验证元素具有ID(预期)： {id_name} | 元素定位： {locator}")
-    def is_element_have_id(self, locator: str, id_name: str) -> None:
+    def is_element_have_id(self, locator: Union[str,Locator], id_name: str) -> None:
         """
         断言：验证元素是否具有指定的ID
         :param locator: 元素定位
         :param id_name: 元素id属性
         """
         logger.info(f"---> 断言 | 验证元素具有ID(预期)： {id_name} | 元素定位： {locator}")
-        elem = self.page.locator(locator)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
         expect(elem).to_have_css(id_name)
 
     @allure.step("---> 断言 | 验证元素具有JavaScript属性(预期)： {js_value} | 元素定位： {locator}")
-    def is_element_have_js_property(self, locator: str, js_value: str) -> None:
+    def is_element_have_js_property(self, locator: Union[str,Locator], js_value: str) -> None:
         """
         断言：用于验证元素是否具有指定的JavaScript属性
         :param locator: 元素定位
         :param js_value: 元素id属性
         """
         logger.info(f"---> 断言 | 验证元素具有JavaScript属性(预期)： {js_value} | 元素定位： {locator}")
-        expect(locator).to_have_js_property(js_value)
+        elem = locator
+        if isinstance(locator, str):
+            elem = self.page.locator(locator)
+        expect(elem).to_have_js_property(js_value)
 
     # --------------------------------- 断言（自定义） ---------------------------------#
     @allure.step("--> 断言 | 验证元素的属性 {attr_name} 具有值(预期)： {value} | 元素定位： {locator}")
-    def is_element_attr_have_value(self, locator: str, attr_name: str, value: str) -> None:
+    def is_element_attr_have_value(self, locator: Union[str,Locator], attr_name: str, value: str) -> None:
         """
         断言：验证元素的某个属性具有指定的值
         :param locator: 元素定位
@@ -626,7 +740,11 @@ class BasePage:
         :param value: 文本内容
         """
         logger.info(f"--> 断言 | 验证元素的属性 {attr_name} 具有值(预期)： {value} | 元素定位： {locator}")
-        actual_value = self.get_element_attribute(locator=locator, attr_name=attr_name)
+        actual_value = ""
+        if isinstance(locator, str):
+            actual_value = self.get_element_attribute(locator=locator, attr_name=attr_name)
+        elif isinstance(locator, Locator):
+            actual_value = locator.get_attribute(attr_name)
         logger.info(f"--> 验证元素的属性 {attr_name} 实际值： {actual_value}")
         assert value == actual_value
 
