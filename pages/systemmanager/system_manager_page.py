@@ -154,6 +154,7 @@ class SystemManagerPage(BasePage):
         """
         点击确定按钮
         """
+        # locator_ok_btn = self.page.get_by_text("确定")
         self.click(self.locator_page_user_ok_btn)
 
     @allure.step("点击取消按钮")
@@ -161,4 +162,5 @@ class SystemManagerPage(BasePage):
         """
         点击取消按钮
         """
-        self.click(self.locator_page_user_cancel_btn)
+        locator_cancel_btn = self.page.get_by_text("取消")
+        self.click(locator_cancel_btn)

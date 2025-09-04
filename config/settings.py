@@ -13,22 +13,23 @@ ENV_VARS = {
     "common": {
         "报告标题": "UI自动化测试报告",
         "项目名称": "ERTX易特克思",
-        "tester": "终验测试组",  # 这里的key用于在发送钉钉/微信/邮件通知中替换指定的值
-        "department": "产品管理中心",  # 这里的key用于在发送钉钉/微信/邮件通知中替换指定的值
-        "env": "live"  # 这里的key用于在发送钉钉/微信/邮件通知中替换指定的值
+        "tester": "终验测试组",
+        "department": "产品管理中心",
+        "env": "test"
     },
     "test": {
         # 测试环境域名
         "host": "http://erdcloud-plat-web-erdcloud-plm-4.szcp.ddns.e-lead.cn/",
         # 密码加密的密钥
         "ace_key": "",
-        # 默认测试账号 - 已绑定手机号码
         "default_user_login": "erdcadmin",
         "default_user_password": "Pw!123456",
     },
     "live": {
         # 测试环境域名
         "host": "http://cbb-sit-1.apps.paas.szcp.ddns.e-lead.cn/",
+        # 密码加密的密钥
+        "ace_key": "",
         # 默认测试账号
         "default_user_login": "erdcadmin",
         "default_user_password": "Pw!123456",
@@ -92,7 +93,7 @@ LOG_INFO = [
 # 发送邮件的相关配置信息
 email = {
     "user": "liangwx@e-lead.cn",  # 发件人邮箱
-    "password": "Elead202506@",  # 发件人邮箱授权码
+    "password": "Elead202509@",  # 发件人邮箱授权码
     "host": "mail.e-lead.cn",
     "to": ['liangwx@e-lead.cn']  # 收件人邮箱
 }

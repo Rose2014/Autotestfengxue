@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @File    : test_lotest_system_manager.py
+# @File    : test_system_manager.py
 # @Software: PyCharm
 # @Desc:
 

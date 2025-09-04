@@ -111,11 +111,12 @@ def pytest_terminal_summary(terminalreporter, config):
         _TOTAL = _PASSED + _FAILED + _SKIPPED + _XPASSED + _XFAILED + _ERROR + _RERUN
 
     try:
-        _DURATION = time.time() - terminalreporter._sessionstarttime
-        session_start_time = datetime.fromtimestamp(terminalreporter._sessionstarttime)
+        _DURATION = time.time() - terminalreporter._session.starttime
+        session_start_time = datetime.fromtimestamp(terminalreporter._session.starttime)
         _START_TIME = f"{session_start_time.year}年{session_start_time.month}月{session_start_time.day}日 " \
                       f"{session_start_time.hour}:{session_start_time.minute}:{session_start_time.second}"
-    except AttributeError:
+    except AttributeError as e:
+        logger.error(f'ERROR-->pytest_terminal_summary：{e}')
         # 如果无法获取_sessionstarttime，使用当前时间作为替代
         _DURATION = 0
         current_time = datetime.now()

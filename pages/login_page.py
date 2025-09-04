@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 # @File    : login_page.py
 # @Software: PyCharm
-# @Desc:
+# @Desc:登录页面
 
 # 标准库导入
 # 第三方库导入
 import allure
 # 本地应用/模块导入
 from utils.base_utils.base_page import BasePage
-
+from config.global_vars import GLOBAL_VARS
 
 class LoginPage(BasePage):
     # 网页登录，账号、密码、登录按钮定位
@@ -25,7 +25,7 @@ class LoginPage(BasePage):
         """
         访问登录页面
         """
-        self.visit("#/erdc-login-erdcloud")
+        self.visit(GLOBAL_VARS.get("host")+"#/erdc-login-erdcloud")
 
     def is_login_page(self):
         """
