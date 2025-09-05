@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @File    : test_system_manager.py
 # @Software: PyCharm
-# @Desc:
+# @Desc:系统管理-部门-创建用户
 
 # 标准库导入
 import time
@@ -11,7 +11,6 @@ from loguru import logger
 from playwright.sync_api import Page
 # 本地应用/模块导入
 from pages.system_manager.system_manager_page import SystemManagerPage
-from pages.panoramic_navigation_page import PanoramicNavigationPage
 from utils.data_utils.faker_handle import FakerData
 
 @pytest.mark.system_manager
