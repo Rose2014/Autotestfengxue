@@ -75,7 +75,7 @@ SEND_RESULT_TYPE = 0
 # 指定日志收集级别和日志文件路径
 LOG_INFO = [
     {"level": "INFO", "filename": os.path.join(LOG_DIR, "service_info.log")},
-    {"level": "TRACE", "filename": os.path.join(LOG_DIR, "service_full.log")}
+    # {"level": "TRACE", "filename": os.path.join(LOG_DIR, "service_full.log")}
 ]
 """
 支持的日志级别：

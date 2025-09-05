@@ -4,7 +4,7 @@
 # @Desc:
 
 # 标准库导入
-from datetime import datetime
+import time
 # 第三方库导入
 import pytest
 from loguru import logger
@@ -21,10 +21,22 @@ class TestSystemManager:
         "create_user": [
             {
                 "title": "系统管理员正确创建用户，密级：访客，License:否",
-                "userId": "AutoTestUI"+datetime.now().strftime("%Y%m%d%H%M%S"),
-                "userAccount": "AutoTestUI"+datetime.now().strftime("%Y%m%d%H%M%S"),
-                "userCn":"AutoTestUI"+datetime.now().strftime("%Y%m%d%H%M%S"),
-                "userEn":"AutoTestUI"+datetime.now().strftime("%Y%m%d%H%M%S"),
+                "userId": "AutoTestUI"+time.strftime("%Y%m%d%H%M%S"),
+                "userAccount": "AutoTestUI"+time.strftime("%Y%m%d%H%M%S"),
+                "userCn":"AutoTestUI"+time.strftime("%Y%m%d%H%M%S"),
+                "userEn":"AutoTestUI"+time.strftime("%Y%m%d%H%M%S"),
+                "securityLevel":"访客",
+                "mail":FakerData().generate_email(lan="en"),
+                "phone":FakerData().generate_phone(lan="zh"),
+                "license":"否",
+                "run": True
+            },
+            {
+                "title": "系统管理员正确创建用户，密级：内部，License:是",
+                "userId": "AutoTestUI"+time.strftime("%Y%m%d%H%M%S"),
+                "userAccount": "AutoTestUI"+time.strftime("%Y%m%d%H%M%S"),
+                "userCn":"AutoTestUI"+time.strftime("%Y%m%d%H%M%S"),
+                "userEn":"AutoTestUI"+time.strftime("%Y%m%d%H%M%S"),
                 "securityLevel":"访客",
                 "mail":FakerData().generate_email(lan="en"),
                 "phone":FakerData().generate_phone(lan="zh"),
@@ -37,16 +49,10 @@ class TestSystemManager:
     @pytest.fixture(autouse=True)
     def setup_teardown_for_each(self,user_page: Page):
         logger.info("\n---------------Start: 开始测试-------------\n")
-
-
         self.user_page = user_page
-        PanoramicNavigationPage(self.user_page).is_home_page()
-        self.user_page.wait_for_timeout(3000)
         self.system_manager_page = SystemManagerPage(self.user_page)
         self.system_manager_page.navigate()
-
         yield
-
         logger.info("\n---------------End: 结束测试-------------\n")
 
     @pytest.mark.parametrize("case", cases["create_user"], ids=lambda x: x["title"])

@@ -16,6 +16,7 @@ from playwright.sync_api import Page
 from config.path_config import BASE_DIR
 from config.global_vars import GLOBAL_VARS
 from pages.login_page import LoginPage
+from pages.panoramic_navigation_page import PanoramicNavigationPage
 
 
 @pytest.fixture(scope="function")
@@ -65,11 +66,12 @@ def admin_page(new_context):
 
 def is_login_valid(login):
     user_json_path = os.path.join(BASE_DIR, ".auth", f"{login}.json")
+    logger.info(f"user_json_path:{user_json_path}")
     try:
         with open(user_json_path, 'r', encoding='utf-8') as file:
             user_json = json.load(file)
-            logger.debug(f"成功读取用户JSON文件内容{user_json}")
-        expires = jsonpath(user_json, "$.cookies[?(@.name=='autologin_trustie')].expires")[0]
+            # logger.debug(f"成功读取用户JSON文件内容{user_json}")
+        expires = jsonpath(user_json, "$.cookies[?(@.name=='locale')].expires")[0]
         if expires and time.time() < expires:
             logger.debug(f"{user_json_path}，用户登录态未过期，无需重新登录，可直接使用")
             return user_json_path
@@ -89,7 +91,10 @@ def page_login_save_cookies(users, page: Page):
     LoginPage(page).login_on_page_flow(users["login"], users["password"])
     # 断言：登录成功
     LoginPage(page).is_login_page()
+    PanoramicNavigationPage(page).is_home_page()
+    page.wait_for_timeout(3000)
     user_json_path = os.path.join(BASE_DIR, ".auth", f"{users['login']}.json")
     # 在本地会保存登录cookies
     page.context.storage_state(path=user_json_path)
+
     return page

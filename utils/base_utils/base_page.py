@@ -70,7 +70,7 @@ class BasePage:
 
     @allure.step("--> 等待页面加载，且状态为：{state}, 超时{timeout}秒")
     def wait_for_load_state(self,
-                            state: Optional[Literal["domcontentloaded", "load", "networkidle"]] = 'networkidle',
+                            state: Optional[Literal["domcontentloaded", "load", "networkidle"]] = 'load',
                             timeout=30):
         """
         在页面达到所需的加载状态时返回
