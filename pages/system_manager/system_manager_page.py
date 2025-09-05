@@ -134,7 +134,7 @@ class SystemManagerPage(BasePage):
         """
         self.input(self.locator_page_mail_input, text)
 
-    @allure.step("选择密级【{text}】")
+    @allure.step("创建用户，选择密级【{text}】")
     def select_security_level(self,text:str) -> None:
         """
         选择密级，默认访客
@@ -156,7 +156,7 @@ class SystemManagerPage(BasePage):
         """
         self.page.get_by_role("radio",name=text).filter(has_text=text).click()
 
-    @allure.step("点击确定按钮")
+    @allure.step("点击创建用户【确定】按钮")
     def click_ok_btn(self) -> None:
         """
         点击确定按钮
@@ -164,7 +164,7 @@ class SystemManagerPage(BasePage):
         locator_ok_btn = self.page.get_by_role("button", name="确定")
         self.click(locator_ok_btn)
 
-    @allure.step("点击取消按钮")
+    @allure.step("点击创建用户【取消】按钮")
     def click_cancel_btn(self) -> None:
         """
         点击取消按钮

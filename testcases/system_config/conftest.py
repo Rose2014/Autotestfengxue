@@ -41,29 +41,6 @@ def user_page(new_context):
 
     yield page
 
-
-@pytest.fixture(scope="function")
-def admin_page(new_context):
-    """
-    创建admin_user_page, 加载admin_user.json数据
-    :return:
-    """
-    users = {
-        "login": GLOBAL_VARS['admin_user_login'],
-        "password": GLOBAL_VARS['admin_user_password']
-    }
-    # 如果读取用户登录数据成功且用户cookies没有过期，则免登录
-    if is_login_valid(users["login"]):
-        context = new_context(storage_state=is_login_valid(users["login"]))
-        page = context.new_page()
-    else:
-        # 读取用户登录数据失败或者已过期，需要登录
-        context = new_context()
-        page = page_login_save_cookies(users, context.new_page())
-
-    yield page
-
-
 def is_login_valid(login):
     user_json_path = os.path.join(BASE_DIR, ".auth", f"{login}.json")
     logger.info(f"user_json_path:{user_json_path}")
