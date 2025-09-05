@@ -29,7 +29,7 @@ RUN git clone https://gitlink.org.cn/floraachy/uiautotest_playwright.git
 
 
 # 设置工作目录
-WORKDIR /uiautotest_playwright
+WORKDIR /pyui_autotest
 
 # 修改测试账号密码  关键字：****autotest-test****
 RUN sed -i "s/\*\*\*\*autotest-test\*\*\*\*/你的测试账号的密码/g" config/settings.py

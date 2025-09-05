@@ -40,7 +40,7 @@ def run(**kwargs):
 
         logger.info("Starting Test")
         # ------------------------ 处理一下获取到的参数----------------------------
-        logger.debug(f"run方法的入参：{kwargs}")
+        # logger.debug(f"run方法的入参：{kwargs}")
         env_key = kwargs.get("env", "") or None
         marks = kwargs.get("m", "") or None
 
@@ -77,7 +77,7 @@ def run(**kwargs):
         GLOBAL_VARS.update(ENV_VARS["common"])
         GLOBAL_VARS.update(ENV_VARS[env_key])
         # ------------------------ pytest执行测试用例 ------------------------
-        logger.debug(f"pytest运行的参数：{arg_list}")
+        # logger.debug(f"pytest运行的参数：{arg_list}")
         pytest.main(args=arg_list)
         # ------------------------ 生成测试报告 ------------------------
         if kwargs.get("report") == "yes":
