@@ -19,7 +19,7 @@ from pages.login_page import LoginPage
 from pages.panoramic_navigation_page import PanoramicNavigationPage
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def user_page(new_context):
     """
     创建default_user_page, 加载default_user.json数据
