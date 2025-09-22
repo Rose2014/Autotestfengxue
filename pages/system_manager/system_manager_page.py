@@ -8,8 +8,6 @@
 import allure
 from playwright.sync_api import expect
 from loguru import logger
-
-from config.global_vars import GLOBAL_VARS
 # 本地应用/模块导入
 from utils.base_utils.base_page import BasePage
 

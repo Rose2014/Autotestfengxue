@@ -19,6 +19,8 @@ class LoginPage(BasePage):
     locator_page_login_tip = "//h1[text()='登录']"
     # 密码错误提示语
     #locator_wrong_pwd_tip = ""
+    #登录页loading
+    locator_page_loading = "//div[@id='global-loading-new']"
 
     @allure.step("访问登录页面：/erdc-login-erdcloud")
     def navigate(self):
@@ -32,7 +34,7 @@ class LoginPage(BasePage):
         确定是登录页面
         """
         self.is_element_visible(self.locator_page_login_tip)
-
+    
     @allure.step("网页登录：输入用户名：{login}")
     def input_username_on_page(self, login):
         """
@@ -53,6 +55,11 @@ class LoginPage(BasePage):
         网页登录：点击登录按钮
         """
         self.click(locator=self.locator_page_login_btn)
+        self.wait_for_load_state()
+
+    # @allure.step("等待登录页loading结束")
+    def wait_for_load_state(self):
+        self.page.wait_for_selector(self.locator_page_loading,state="hidden")
 
     # --------------------- 流程 -------------------------------------
     @allure.step("网页登录：输入用户名：{login}，输入密码：{password}，点击【登录】按钮")
