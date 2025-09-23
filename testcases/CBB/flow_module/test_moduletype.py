@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @File    : test_system_manager.py
+# @File    : test_moduletype.py
 # @Software: PyCharm
 # @Desc:测试-流程设计-流程模板-流程类型（新建、删除）
 
@@ -11,9 +11,9 @@ from loguru import logger
 from playwright.sync_api import Page
 from pages.CBB.flow_module_page import FlowModulePage
 
-@pytest.mark.cbb
+# @pytest.mark.cbb
 class TestModuleType:
-    """CBB-流程模板测试"""
+    """CBB-流程类型测试"""
     cases = {
         "create_and_delete_module_type": [
             {
@@ -34,7 +34,7 @@ class TestModuleType:
         logger.info("\n---------------End: 结束测试-------------\n")
 
     @pytest.mark.parametrize("case", cases["create_and_delete_module_type"], ids=lambda x: x["title"])
-    def test_create_module_type(self,case):
+    def test_create_and_delete_module_type(self,case):
         """
         测试-流程设计-流程模板-流程类型（新建、删除）
         """
@@ -42,3 +42,4 @@ class TestModuleType:
         self.flow_module_page.input_module_type_name(case.get("moduleTypeName"))
         self.flow_module_page.delete_module_type(case.get("moduleTypeName"))
         self.flow_module_page.search_module_type(case.get("moduleTypeName"))
+    
