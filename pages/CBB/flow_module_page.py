@@ -40,8 +40,9 @@ class FlowModulePage(BasePage):
         """
         输入流程类型名称
         """
-        self.page.get_by_role("treeitem", name="ᚻ CBB").get_by_role("textbox").fill(text)
-        self.page.get_by_role("treeitem", name="ᚻ CBB").get_by_role("textbox").press("Enter")
+        locator = self.page.get_by_role("treeitem", name="ᚻ CBB").get_by_role("textbox")
+        self.input(locator,text)
+        self.press(locator,"Enter")
         self.page.wait_for_timeout(3000)
 
     @allure.step("删除流程类型:{module_type_name}")
@@ -51,8 +52,10 @@ class FlowModulePage(BasePage):
         """
         locator_str = "//span[@title='{}']/parent::span".format(module_type_name)
         self.hover(locator_str)
+        logger.info(f"点击流程类型【{module_type_name}】的【删除】图标")
         self.page.get_by_role("button", name="ᚚ").click()
-        self.page.get_by_role("button", name="确定").click()
+        logger.info("点击删除流程类型二次确认的【确定】按钮")
+        self.page.get_by_role("button", name="确 定").click()
         self.page.wait_for_timeout(3000)
     
     @allure.step("搜索流程类型:{module_type_name}")
@@ -60,8 +63,9 @@ class FlowModulePage(BasePage):
         """
         搜索流程类型
         """
-        self.page.get_by_role("textbox", name="搜索关键字").fill(module_type_name)
-        self.page.get_by_role("textbox", name="搜索关键字").press("Enter")
+        locator = self.page.get_by_role("textbox", name="搜索关键字")
+        self.input(locator,module_type_name)
+        self.press(locator,"Enter")
         self.page.wait_for_timeout(3000)
         count = self.page.get_by_text(module_type_name).count()
         logger.info("搜索到的流程类型数量是{}", count)
@@ -73,17 +77,17 @@ class FlowModulePage(BasePage):
         点击流程类型
         """
         locator_str = re.compile(r".*{}.*".format(module_type_name), re.IGNORECASE)
-        allure.step("点击流程类型:{}".format(locator_str))
+        logger.info(f"点击流程类型：{locator_str}")
         self.page.get_by_text(locator_str).first.click()
         self.page.wait_for_timeout(3000)
     
-    locator_page_create_module_button = "//button[text()='创建流程模板']"
     @allure.step("点击流程模板【创建】按钮")
     def click_create_flow_module_btn(self):
         """
         点击流程模板【创建】按钮
         """
-        self.page.get_by_role("button", name="创建").click()
+        locator = self.page.get_by_role("button", name="创建")
+        self.click(locator)
         self.page.wait_for_timeout(3000)
 
     def create_flow_module(self,module_name:str,module_id:str,module_desc:str,node_name:str,node_desc:str,node_flow_desc:str):
@@ -104,6 +108,7 @@ class FlowModulePage(BasePage):
         """
         输入流程模板名称
         """
+        logger.info(f"输入流程模板名称：{text}")
         self.page.get_by_role("textbox", name="请输入").nth(2).fill(text)
     
     @allure.step("输入流程模板标识:{text}")
@@ -111,6 +116,7 @@ class FlowModulePage(BasePage):
         """
         输入流程模板标识
         """
+        logger.info(f"输入流程模板标识：{text}")
         self.page.get_by_role("textbox", name="请输入").nth(3).fill(text)
         self.page.wait_for_timeout(1500)
     
@@ -122,6 +128,7 @@ class FlowModulePage(BasePage):
         self.page.wait_for_timeout(1500)
         self.page.locator("textarea").click()
         self.page.wait_for_timeout(3000)
+        logger.info(f"输入流程模板描述：{text}")
         self.page.locator("textarea").fill(text)
         self.page.wait_for_timeout(1500)
 
@@ -130,33 +137,31 @@ class FlowModulePage(BasePage):
         """
         创建简单流程模板
         """
-        
-        allure.step("点击开始事件")
+        logger.info("点击开始事件")
         self.page.get_by_title("创建开始事件").click()
         self.page.get_by_role("dialog", name="dialog").get_by_role("img").click()
-        allure.step("点击追加任务")
+        logger.info("点击追加任务")
         self.page.get_by_title("追加任务").click()
         self.page.wait_for_timeout(1500)
-        allure.step("输入任务节点名称:{nodeName}")
+        logger.info(f"输入任务节点名称:{nodeName}")
         self.page.get_by_role("textbox", name="请填入名称").click()
         self.page.get_by_role("textbox", name="请填入名称").fill(nodeName)
-        allure.step("输入任务节点描述:{node_desc}")
+        logger.info(f"输入任务节点描述:{node_desc}")
         self.page.get_by_role("textbox", name="请填入描述").click()
+        self.input(self.page.get_by_role("textbox", name="请填入描述"),node_desc)
+        logger.info(f"输入任务节点流程指引:{flow_desc}")
+        self.input(self.page.get_by_role("textbox", name="请填入流程指引"),flow_desc)
         self.page.wait_for_timeout(1500)
-        self.page.get_by_role("textbox", name="请填入描述").fill(node_desc)
-        allure.step("输入任务节点流程指引:{flow_desc}")
-        self.page.get_by_role("textbox", name="请填入流程指引").click()
+        self.input(self.page.get_by_role("textbox", name="请填入流程指引"),flow_desc)
         self.page.wait_for_timeout(1500)
-        self.page.get_by_role("textbox", name="请填入流程指引").fill(flow_desc)
-        self.page.wait_for_timeout(1500)
-        allure.step("点击追加结束事件")
+        logger.info("点击追加结束事件")
         self.page.get_by_title("追加结束事件").dblclick()
         self.page.wait_for_timeout(3000)
-        allure.step("点击【保存】按钮")
-        self.page.get_by_role("button", name="保存").click()
+        logger.info("点击【保存】按钮")
+        self.click(self.page.get_by_role("button", name="保存"))
         self.page.wait_for_timeout(1500)
-        allure.step("点击【确定】按钮")
-        self.page.get_by_role("button", name="确定").click()
+        logger.info("点击【确定】按钮")
+        self.click(self.page.get_by_role("button", name="确定"))
         self.page.wait_for_timeout(5000)
     
     @allure.step("校验流程模板是否存在:{module_name}")
@@ -175,11 +180,24 @@ class FlowModulePage(BasePage):
         """
         筛选流程模板版本状态
         """
-        self.page.get_by_role("cell", name="版本状态").get_by_role("emphasis").click()
-        # self.page.get_by_role("cell", name="版本状态 Ჲ").get_by_role("emphasis").click()
-        self.page.locator("#customSelect").get_by_role("textbox", name="请选择").click()
-        self.page.get_by_role("list").get_by_text(state, exact=True).click()
-        self.page.get_by_role("button", name="确定").click()
+        logger.info(f"筛选【版本状态】列，选择：{state}")
+        self.click(self.page.get_by_role("cell", name="版本状态").get_by_role("emphasis"))
+        self.click(self.page.locator("#customSelect").get_by_role("textbox", name="请选择"))
+        self.click(self.page.get_by_role("list").get_by_text(state, exact=True))
+        self.click(self.page.get_by_role("button", name="确定"))
+        self.page.wait_for_timeout(3500)
+
+    
+    @allure.step("筛选启用否:{isenable}")
+    def filter_isenable(self,isenable:bool):
+        """
+        筛选启用否
+        """
+        logger.info(f"筛选【是否启用】列，选择：{isenable}")
+        enable_str = "是" if isenable else "否"
+        self.click(self.page.get_by_role("cell", name="启用否").get_by_role("emphasis"))
+        self.click(self.page.get_by_role("radio", name=enable_str))
+        self.click(self.page.get_by_role("button", name="确定"))
         self.page.wait_for_timeout(3500)
 
     @allure.step("搜索流程模板:{module_name}")
@@ -187,13 +205,19 @@ class FlowModulePage(BasePage):
         """
         搜索流程模板
         """
-        self.page.get_by_role("textbox", name="请输入", exact=True).click()
-        self.page.get_by_role("textbox", name="请输入", exact=True).fill(module_name)
-        self.page.get_by_role("textbox", name="请输入", exact=True).press("Enter")
+        locator = self.page.get_by_role("textbox", name="请输入", exact=True)
+        self.click(locator)
+        self.input(locator,module_name)
+        self.press(locator,"Enter")
         self.page.wait_for_timeout(3500)
         locator_str = re.compile(r".*{}.*".format(module_name), re.IGNORECASE)
         elements = self.page.get_by_text(locator_str)
-        assert elements.count() > 0, "未找到流程模板"
+        if elements.count() == 0:
+            logger.info(f"没有搜索到相匹配的流程模板：{module_name}")
+            return None
+        else:
+            logger.info(f"搜索到[{elements.count()}]个相匹配结果 | 搜索关键字：{module_name}")
+            return elements
 
     @allure.step("禁用流程模板:{module_name}")
     def disable_flow_module(self,module_name:str):
@@ -203,16 +227,61 @@ class FlowModulePage(BasePage):
         locator_str = re.compile(r".*{}.*".format(module_name), re.IGNORECASE)
         locator = self.page.get_by_text(locator_str).first
         module_name = locator.inner_text()
-        self.page.get_by_role("rowgroup").filter(has_text=module_name).locator("button").first.click()
-        self.page.wait_for_timeout(1000)
-        self.page.get_by_text("禁用",exact=True).click()
+        self.right_click_flow_module(module_name)
+        self.click_right_menu("禁用")
+        logger.info(f"筛选【是否启用】列，选择：否")
+        self.filter_isenable(False)
         self.page.wait_for_timeout(1500)
-        locator = self.page.get_by_role("rowgroup").filter(has_text=module_name).filter(has_text='已检入').filter(has_text='否')
-        assert locator.count() > 0, "未找到禁用的流程模板"
+        logger.info(f"校验流程模板是否禁用 | 模板名称：{module_name}")
+        self.check_flow_module_exist(module_name)
 
-    
     @allure.step("删除流程模板:{module_name}")
     def delete_flow_module(self,module_name:str):
         """
         删除流程模板
         """
+        locator_str = re.compile(r".*{}.*".format(module_name), re.IGNORECASE)
+        locator = self.page.get_by_text(locator_str).first
+        module_name = locator.inner_text()
+        self.right_click_flow_module(module_name)
+        self.click_right_menu("删除")
+        logger.info(f"点击二次【确认】按钮")
+        self.click(self.page.get_by_role("button", name="确认"))
+        self.page.wait_for_timeout(3000)
+        elements = self.page.get_by_text(module_name)
+        assert elements.count() == 0, "删除流程模板失败"
+        logger.info(f"删除流程模板成功 | 模板名称：{module_name}")
+
+    @allure.step("右键点击流程模板:{module_name}")
+    def right_click_flow_module(self,module_name:str):
+        """
+        右键点击流程模板
+        """
+        logger.info(f"右键点击模板名称：{module_name}")
+        self.page.get_by_role("cell", name=module_name).locator("span").click(button="right")
+        self.page.wait_for_timeout(1000)
+
+    @allure.step("点击流程模板右键菜单:{menu_name}")
+    def click_right_menu(self,menu_name:str):
+        """
+        点击流程模板右键菜单(编辑、撤销编辑、禁用、启用、流程图、删除、BPMN、发起流程、检入、查看记录)
+        """
+        self.click(self.page.get_by_text(menu_name,exact=True))
+        self.page.wait_for_timeout(1000)
+
+
+    @allure.step("发起简单流程:{flow_module_name}")
+    def create_new_flow(self,module_name:str,flow_module_name:str,flow_module_desc:str):
+        """
+        发起简单流程
+        """
+        locator_str = re.compile(r".*{}.*".format(module_name), re.IGNORECASE)
+        locator = self.page.get_by_text(locator_str).first
+        module_name = locator.inner_text()
+        self.right_click_flow_module(module_name)
+        self.click_right_menu("发起流程")
+        self.input("//input[@placeholder='请填入流程名称']",flow_module_name)
+        self.input("//textarea[@placeholder='请填入流程描述']",flow_module_desc)
+        self.click(self.page.get_by_role("button", name="提交"))
+        self.is_element_visible(self.page.get_by_text("流程发起成功"))
+        logger.info(f"发起简单流程成功 | 流程名称：{flow_module_name}")

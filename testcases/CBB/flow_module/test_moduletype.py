@@ -11,7 +11,7 @@ from loguru import logger
 from playwright.sync_api import Page
 from pages.CBB.flow_module_page import FlowModulePage
 
-# @pytest.mark.cbb
+@pytest.mark.cbb
 class TestModuleType:
     """CBB-流程类型测试"""
     cases = {
@@ -38,7 +38,7 @@ class TestModuleType:
         """
         测试-流程设计-流程模板-流程类型（新建、删除）
         """
-        self.flow_module_page.click_create_module_button()
+        self.flow_module_page.click_create_module_type_button()
         self.flow_module_page.input_module_type_name(case.get("moduleTypeName"))
         self.flow_module_page.delete_module_type(case.get("moduleTypeName"))
         self.flow_module_page.search_module_type(case.get("moduleTypeName"))
