@@ -18,8 +18,8 @@ class TestModuleType:
         "create_and_delete_module_type": [
             {
                 "title": "创建和删除流程类型",
-                "moduleTypeName": f"自动化测试-{time.strftime('%Y%m%d%H%M%S')}",
-                "run": True
+                "moduleTypeName": f"自动化测试-{time.strftime('%Y%m%d%H%M%S')}1",
+                "run": False
             }
         ]
     }

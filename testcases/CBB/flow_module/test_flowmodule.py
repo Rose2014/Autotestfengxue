@@ -25,7 +25,7 @@ class TestFlowModule:
                 "nodeName": f"自动化测试节点{time.strftime('%Y%m%d%H%M%S')}",
                 "nodeDesc": f"自动化测试节点-描述{time.strftime('%Y%m%d%H%M%S')}",
                 "nodeFlowDesc": f"自动化测试节点-流程指引{time.strftime('%Y%m%d%H%M%S')}",
-                "run": True
+                "run": False
             }
         ],
         "disable_flow_module": [
@@ -51,7 +51,7 @@ class TestFlowModule:
                 "moduleName": "自动化测试",
                 "flowModuleName": f"自动化测试-发起流程-{time.strftime('%Y%m%d%H%M%S')}",
                 "flowModuleDesc": f"自动化测试-发起流程-描述-{time.strftime('%Y%m%d%H%M%S')}",
-                "run": True
+                "run": False
             }
         ],
     }

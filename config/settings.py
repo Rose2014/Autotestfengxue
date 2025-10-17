@@ -27,7 +27,7 @@ ENV_VARS = {
     },
     "live": {
         # 测试环境域名
-        "host": "http://cbb-sit-1.apps.paas.szcp.ddns.e-lead.cn/",
+        "host": "http://192.168.11.130/",
         # 密码加密的密钥
         "ace_key": "",
         # 默认测试账号

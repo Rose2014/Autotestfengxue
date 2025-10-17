@@ -226,7 +226,7 @@ class FlowModulePage(BasePage):
         """
         locator_str = re.compile(r".*{}.*".format(module_name), re.IGNORECASE)
         locator = self.page.get_by_text(locator_str).first
-        module_name = locator.inner_text()
+        module_name = locator.text_content()
         self.right_click_flow_module(module_name)
         self.click_right_menu("禁用")
         logger.info(f"筛选【是否启用】列，选择：否")
@@ -242,7 +242,7 @@ class FlowModulePage(BasePage):
         """
         locator_str = re.compile(r".*{}.*".format(module_name), re.IGNORECASE)
         locator = self.page.get_by_text(locator_str).first
-        module_name = locator.inner_text()
+        module_name = locator.text_content()
         self.right_click_flow_module(module_name)
         self.click_right_menu("删除")
         logger.info(f"点击二次【确认】按钮")
@@ -276,8 +276,9 @@ class FlowModulePage(BasePage):
         发起简单流程
         """
         locator_str = re.compile(r".*{}.*".format(module_name), re.IGNORECASE)
-        locator = self.page.get_by_text(locator_str).first
-        module_name = locator.inner_text()
+        locators = self.page.get_by_text(locator_str)
+        logger.info(f"查找【{module_name}】流程模板，共{locators.count()}个")
+        module_name = locators.first.text_content()
         self.right_click_flow_module(module_name)
         self.click_right_menu("发起流程")
         self.input("//input[@placeholder='请填入流程名称']",flow_module_name)

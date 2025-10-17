@@ -65,9 +65,10 @@ def page_login_save_cookies(users, page: Page):
     用户登录并且保存cookies
     """
     LoginPage(page).navigate()
+    LoginPage(page).is_login_page()
     LoginPage(page).login_on_page_flow(users["login"], users["password"])
     # 断言：登录成功
-    LoginPage(page).is_login_page()
+    
     PanoramicNavigationPage(page).is_home_page()
     page.wait_for_timeout(3000)
     user_json_path = os.path.join(BASE_DIR, ".auth", f"{users['login']}.json")

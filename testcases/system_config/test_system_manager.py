@@ -10,7 +10,7 @@ import pytest
 from loguru import logger
 from playwright.sync_api import Page
 # 本地应用/模块导入
-from pages.system_manager.system_manager_page import SystemManagerPage
+from pages.system_Config.system_manager_page import SystemManagerPage
 from utils.data_utils.faker_handle import FakerData
 
 @pytest.mark.system_manager
@@ -18,6 +18,78 @@ class TestSystemManager:
     """系统管理模块功能测试"""
     cases = {
         "create_user": [
+            {
+                "title": "系统管理员正确创建用户，密级：内部，License:是",
+                "userId": "supervisor001",
+                "userAccount": "supervisor001",
+                "userCn":"直接主管-001",
+                "userEn":"supervisor001",
+                "securityLevel":"内部",
+                "mail":FakerData().generate_email(lan="en"),
+                "phone":FakerData().generate_phone(lan="zh"),
+                "license":"是",
+                "run": True
+            },
+            {
+                "title": "系统管理员正确创建用户，密级：内部，License:是",
+                "userId": "supervisor002",
+                "userAccount": "supervisor002",
+                "userCn":"直接主管-002",
+                "userEn":"supervisor002",
+                "securityLevel":"内部",
+                "mail":FakerData().generate_email(lan="en"),
+                "phone":FakerData().generate_phone(lan="zh"),
+                "license":"是",
+                "run": True
+            },
+            {
+                "title": "系统管理员正确创建用户，密级：内部，License:是",
+                "userId": "supervisor003",
+                "userAccount": "supervisor003",
+                "userCn":"直接主管-003",
+                "userEn":"supervisor003",
+                "securityLevel":"内部",
+                "mail":FakerData().generate_email(lan="en"),
+                "phone":FakerData().generate_phone(lan="zh"),
+                "license":"是",
+                "run": True
+            },
+            {
+                "title": "系统管理员正确创建用户，密级：内部，License:是",
+                "userId": "depapproval001",
+                "userAccount": "depapproval001",
+                "userCn":"部门责任人-001",
+                "userEn":"depapproval001",
+                "securityLevel":"内部",
+                "mail":FakerData().generate_email(lan="en"),
+                "phone":FakerData().generate_phone(lan="zh"),
+                "license":"是",
+                "run": True
+            },
+            {
+                "title": "系统管理员正确创建用户，密级：内部，License:是",
+                "userId": "attenperson001",
+                "userAccount": "attenperson001",
+                "userCn":"考勤专员-001",
+                "userEn":"attenperson001",
+                "securityLevel":"内部",
+                "mail":FakerData().generate_email(lan="en"),
+                "phone":FakerData().generate_phone(lan="zh"),
+                "license":"是",
+                "run": True
+            },
+            {
+                "title": "系统管理员正确创建用户，密级：内部，License:是",
+                "userId": "sysapproval001",
+                "userAccount": "sysapproval001",
+                "userCn":"体系负责人-001",
+                "userEn":"sysapproval001",
+                "securityLevel":"内部",
+                "mail":FakerData().generate_email(lan="en"),
+                "phone":FakerData().generate_phone(lan="zh"),
+                "license":"是",
+                "run": True
+            },
             {
                 "title": "系统管理员正确创建用户，密级：访客，License:否",
                 "userId": f"AutoTestUI{time.strftime('%Y%m%d%H%M%S')}1",
@@ -28,7 +100,7 @@ class TestSystemManager:
                 "mail":FakerData().generate_email(lan="en"),
                 "phone":FakerData().generate_phone(lan="zh"),
                 "license":"否",
-                "run": True
+                "run": False
             },
             {
                 "title": "系统管理员正确创建用户，密级：内部，License:是",
@@ -40,7 +112,7 @@ class TestSystemManager:
                 "mail":FakerData().generate_email(lan="en"),
                 "phone":FakerData().generate_phone(lan="zh"),
                 "license":"否",
-                "run": True
+                "run": False
             }
         ]
     }
