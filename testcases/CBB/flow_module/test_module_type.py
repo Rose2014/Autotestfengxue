@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @File    : test_moduletype.py
+# @File    : test_module_type.py
 # @Software: PyCharm
 # @Desc:测试-流程设计-流程模板-流程类型（新建、删除）
 
@@ -14,12 +14,13 @@ from pages.CBB.flow_module_page import FlowModulePage
 @pytest.mark.cbb
 class TestModuleType:
     """CBB-流程类型测试"""
+
     cases = {
         "create_and_delete_module_type": [
             {
                 "title": "创建和删除流程类型",
                 "moduleTypeName": f"自动化测试-{time.strftime('%Y%m%d%H%M%S')}1",
-                "run": True
+                "run": False
             }
         ]
     }

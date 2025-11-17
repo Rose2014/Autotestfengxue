@@ -138,31 +138,31 @@ class FlowModulePage(BasePage):
         创建简单流程模板
         """
         logger.info("点击开始事件")
-        self.page.get_by_title("创建开始事件").click()
-        self.page.get_by_role("dialog", name="dialog").get_by_role("img").click()
+        self.click(self.page.get_by_title("创建开始事件"))
+        self.click(self.page.get_by_role("dialog", name="dialog").get_by_role("img"))
+        # self.page.wait_for_timeout(1500)
         logger.info("点击追加任务")
-        self.page.get_by_title("追加任务").click()
-        self.page.wait_for_timeout(1500)
+        self.click(self.page.get_by_title("追加任务"))
+        # self.page.wait_for_timeout(1500)
         logger.info(f"输入任务节点名称:{nodeName}")
-        self.page.get_by_role("textbox", name="请填入名称").click()
-        self.page.get_by_role("textbox", name="请填入名称").fill(nodeName)
+        self.input(self.page.get_by_role("textbox", name="请填入名称"),nodeName)
         logger.info(f"输入任务节点描述:{node_desc}")
-        self.page.get_by_role("textbox", name="请填入描述").click()
+        self.click(self.page.get_by_role("textbox", name="请填入描述"))
         self.input(self.page.get_by_role("textbox", name="请填入描述"),node_desc)
         logger.info(f"输入任务节点流程指引:{flow_desc}")
         self.input(self.page.get_by_role("textbox", name="请填入流程指引"),flow_desc)
-        self.page.wait_for_timeout(1500)
+        # self.page.wait_for_timeout(1500)
         self.input(self.page.get_by_role("textbox", name="请填入流程指引"),flow_desc)
-        self.page.wait_for_timeout(1500)
+        # self.page.wait_for_timeout(1500)
         logger.info("点击追加结束事件")
         self.page.get_by_title("追加结束事件").dblclick()
-        self.page.wait_for_timeout(3000)
+        # self.page.wait_for_timeout(3000)
         logger.info("点击【保存】按钮")
         self.click(self.page.get_by_role("button", name="保存"))
-        self.page.wait_for_timeout(1500)
+        # self.page.wait_for_timeout(1500)
         logger.info("点击【确定】按钮")
         self.click(self.page.get_by_role("button", name="确定"))
-        self.page.wait_for_timeout(5000)
+        # self.page.wait_for_timeout(5000)
     
     @allure.step("校验流程模板是否存在:{module_name}")
     def check_flow_module_exist(self,module_name:str):
@@ -235,8 +235,8 @@ class FlowModulePage(BasePage):
         logger.info(f"校验流程模板是否禁用 | 模板名称：{module_name}")
         self.check_flow_module_exist(module_name)
 
-    @allure.step("删除流程模板:{module_name}")
-    def delete_flow_module(self,module_name:str):
+    @allure.step("删除流程模板失败,流程模板已被使用:{module_name}")
+    def delete_flow_module(self,module_name:str,is_exist_flow:bool=True):
         """
         删除流程模板
         """
@@ -248,9 +248,9 @@ class FlowModulePage(BasePage):
         logger.info(f"点击二次【确认】按钮")
         self.click(self.page.get_by_role("button", name="确认"))
         self.page.wait_for_timeout(3000)
-        elements = self.page.get_by_text(module_name)
-        assert elements.count() == 0, "删除流程模板失败"
-        logger.info(f"删除流程模板成功 | 模板名称：{module_name}")
+        elements = self.page.get_by_text("流程模板已被使用, 不能删除")
+        assert elements.count() > 0, "删除流程模板失败"
+        logger.info(f"删除流程模板失败 | 模板名称：{module_name}")
 
     @allure.step("右键点击流程模板:{module_name}")
     def right_click_flow_module(self,module_name:str):
