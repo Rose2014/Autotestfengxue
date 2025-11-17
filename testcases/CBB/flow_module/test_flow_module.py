@@ -25,7 +25,7 @@ class TestFlowModule:
                 "nodeName": f"自动化测试节点{time.strftime('%Y%m%d%H%M%S')}",
                 "nodeDesc": f"自动化测试节点-描述{time.strftime('%Y%m%d%H%M%S')}",
                 "nodeFlowDesc": f"自动化测试节点-流程指引{time.strftime('%Y%m%d%H%M%S')}",
-                "run": False
+                "run": True
             }
         ],
         "disable_flow_module": [
@@ -51,7 +51,7 @@ class TestFlowModule:
                 "moduleName": "自动化测试",
                 "flowModuleName": f"自动化测试-发起流程-{time.strftime('%Y%m%d%H%M%S')}",
                 "flowModuleDesc": f"自动化测试-发起流程-描述-{time.strftime('%Y%m%d%H%M%S')}",
-                "run": False
+                "run": True
             }
         ],
     }
@@ -66,7 +66,7 @@ class TestFlowModule:
         logger.info("\n---------------End: 结束测试-------------\n")
 
     @pytest.mark.parametrize("case", cases["create_flow_module"], ids=lambda x: x["title"])
-    def test_create_flow_module(self,case):
+    def test_002_create_flow_module(self,case):
         """
         测试-流程设计-流程模板-创建流程模板
         """
@@ -76,7 +76,7 @@ class TestFlowModule:
         self.flow_module_page.check_flow_module_exist(case.get("moduleName"))
     
     @pytest.mark.parametrize("case", cases["disable_flow_module"], ids=lambda x: x["title"])
-    def test_disable_flow_module(self,case):
+    def test_003_disable_flow_module(self,case):
         """
         测试-流程设计-流程模板-禁用流程模板
         """
@@ -87,7 +87,7 @@ class TestFlowModule:
         self.flow_module_page.disable_flow_module(case.get("moduleName"))
     
     @pytest.mark.parametrize("case", cases["delete_flow_module"], ids=lambda x: x["title"])
-    def test_delete_flow_module(self,case):
+    def test_004_delete_flow_module(self,case):
         """
         测试-流程设计-流程模板-删除流程模板
         """
@@ -99,7 +99,7 @@ class TestFlowModule:
         self.flow_module_page.delete_flow_module(case.get("moduleName"))
 
     @pytest.mark.parametrize("case", cases["create_new_flow"], ids=lambda x: x["title"])
-    def test_create_new_flow(self,case):
+    def test_005_create_new_flow(self,case):
         """
         测试-流程设计-流程模板-发起简单流程
         """     

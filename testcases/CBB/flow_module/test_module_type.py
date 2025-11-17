@@ -19,7 +19,7 @@ class TestModuleType:
             {
                 "title": "创建和删除流程类型",
                 "moduleTypeName": f"自动化测试-{time.strftime('%Y%m%d%H%M%S')}1",
-                "run": False
+                "run": True
             }
         ]
     }
@@ -34,7 +34,7 @@ class TestModuleType:
         logger.info("\n---------------End: 结束测试-------------\n")
 
     @pytest.mark.parametrize("case", cases["create_and_delete_module_type"], ids=lambda x: x["title"])
-    def test_create_and_delete_module_type(self,case):
+    def test_001_create_and_delete_module_type(self,case):
         """
         测试-流程设计-流程模板-流程类型（新建、删除）
         """
