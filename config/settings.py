@@ -13,23 +13,23 @@ ENV_VARS = {
     "common": {
         "报告标题": "UI自动化测试报告",
         "项目名称": "ERTX易特克思",
-        "tester": "终验测试组",
-        "department": "产品管理中心",
-        "env": "live"
+        "tester": "CBB测试组",
+        "department": "CBB",
+        "env": "SIT"
     },
-    "test": {
+    "SIT": {
         # 测试环境域名
-        "host": "http://erdcloud-plat-web-erdcloud-plm-4.szcp.ddns.e-lead.cn/",
+        "host": "http://cbb-sit-1.apps.paas.szcp.ddns.e-lead.cn",
         # 密码加密的密钥
-        "ace_key": "",
+        "ace_key": "{erdp}UHchMTIzNDU2",
         "default_user_login": "erdcadmin",
         "default_user_password": "Pw!123456",
     },
-    "live": {
+    "UAT": {
         # 测试环境域名
-        "host": "http://192.168.11.130/",
+        "host": "http://erdcloud-plat-web-erdcloud-plm-3.szcp.ddns.e-lead.cn/",
         # 密码加密的密钥
-        "ace_key": "",
+        "ace_key": "{erdp}UHchMTIzNDU2",
         # 默认测试账号
         "default_user_login": "erdcadmin",
         "default_user_password": "Pw!123456",
@@ -46,7 +46,7 @@ class RunConfig:
     browser = ["chromium"]
 
     # 运行模式（headless, headed）
-    mode = "headed" #headless 无头模式， headed 有头模式
+    mode = "headless" #headless 无头模式， headed 有头模式
 
     # 窗口大小
     """

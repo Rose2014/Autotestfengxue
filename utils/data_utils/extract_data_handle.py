@@ -11,7 +11,7 @@ from jsonpath import jsonpath
 from loguru import logger
 from playwright.sync_api import APIResponse
 # 本地应用/模块导入
-from utils.data_utils.data_handle import data_handle
+import data_handle
 
 
 def json_extractor(obj, expr: str = '.'):

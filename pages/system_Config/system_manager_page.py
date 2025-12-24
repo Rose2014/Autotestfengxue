@@ -51,7 +51,7 @@ class SystemManagerPage(BasePage):
         """
         访问系统管理页面
         """
-        self.visit("#/system-participant/member?_s=SystemManagement")
+        self.visit("/#/system-participant/member?_s=SystemManagement")
 
     @allure.step("点击【成员】页签")
     def click_members(self) -> None:
@@ -73,8 +73,10 @@ class SystemManagerPage(BasePage):
         """
         点击用户列表页面【信息】页签
         """
+        self.clear(self.locator_page_search_input)
         self.input(self.locator_page_search_input,text)
         self.page.keyboard.press("Enter")
+        self.wait(2)
 
 
     @allure.step("校验用户【{text}】是否存在，用户应该存在")
@@ -85,7 +87,20 @@ class SystemManagerPage(BasePage):
         count = self.page.get_by_text(text).count()
         logger.info("用户[{}]的数量是{}", text, count)
         assert count > 2
+        self.wait(2)
 
+    @allure.step("重置用户密码为【{password}】")
+    def reset_password(self,password:str) -> None:
+        """
+        重置第一行的用户密码
+        """
+        self.click(self.page.locator(".link-text").first)
+        self.click(self.page.get_by_role("button", name="重置密码"))
+        locator = self.page.get_by_role("textbox", name="请填入新密码")
+        self.click(locator)
+        self.input(locator,password)
+        self.click(self.page.get_by_role("button", name="确定"))
+        self.click(self.page.get_by_role("dialog", name="用户详情").locator("i").nth(1))
 
     @allure.step("点击【创建】按钮")
     def click_create_user_btn(self) -> None:
@@ -152,7 +167,7 @@ class SystemManagerPage(BasePage):
         """
         在创建用户弹框页面进行license授权选择
         """
-        self.page.get_by_role("radio",name=text).filter(has_text=text).click()
+        self.click(self.page.get_by_role("radio",name=text).filter(has_text=text))
 
     @allure.step("点击创建用户【确定】按钮")
     def click_ok_btn(self) -> None:
@@ -161,6 +176,7 @@ class SystemManagerPage(BasePage):
         """
         locator_ok_btn = self.page.get_by_role("button", name="确定")
         self.click(locator_ok_btn)
+        self.wait(2)
 
     @allure.step("点击创建用户【取消】按钮")
     def click_cancel_btn(self) -> None:

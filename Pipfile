@@ -20,5 +20,4 @@ pytest-playwright = "*"
 loguru = "*"
 
 [dev-packages]
-
-
+ipykernel = "*"

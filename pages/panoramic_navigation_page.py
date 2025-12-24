@@ -13,12 +13,17 @@ from utils.base_utils.base_page import BasePage
 
 
 class PanoramicNavigationPage(BasePage):
+    """
+    全景导航页面
+    """
+
     #homepage logo标识
     locator_page_home_tip = "//img[@class='logo-img']"
     #进入全景导航 【更多>>】定位
     locator_page_in_panoramic_navigation_more = "//div[contains(text(),'更多>>')]"
     #收藏更多导航
-    locator_page_in_panoramic_navigation_get_more = "//span[text()='收藏更多导航']"
+    locator_page_in_panoramic_navigation_get_more1 = "//span[text()='收藏更多导航']"
+    locator_page_in_panoramic_navigation_get_more2 = "//span[text()='添加更多导航']"
     # 自定义导航条
     locator_page_custom_navigation = "//span[text()='自定义导航条']"
     # 自定义导航条弹出框 返回、确定、取消
@@ -32,26 +37,49 @@ class PanoramicNavigationPage(BasePage):
     #全景导航侧边栏
     locator_page_navigation_sidebar = "(//span[text()='{}'])[2]"
 
+
+    @allure.step("访问仪表盘页面：/#/system-dashboard/dashboard?appName=ALL&_s=DashboardPortal")
+    def navigate(self):
+        """
+        访问流程设计-流程模板页面
+        """
+        self.visit("/#/system-dashboard/dashboard?appName=ALL&_s=DashboardPortal")
+
     @allure.step("检查是否进入主页面")
     def is_home_page(self):
         """
         确定当前页面是主页面
         """
-        self.is_element_visible(self.locator_page_home_tip)
+        # self.is_element_visible( self.page.locator(".portal-logo"))
+        expect(self.page.locator(".portal-logo")).to_be_visible(timeout=10000)
 
     @allure.step("全景导航：点击主页侧边栏导航【更多>>】，收藏更多导航")
     def click_panoramic_navigation_page_more(self):
         """
             全景导航：点击主页侧边栏导航【更多>>】
         """
-        self.click(locator=self.locator_page_in_panoramic_navigation_more)
+
+        # self.click(locator=self.locator_page_in_panoramic_navigation_more)
+        try:
+            self.page.locator(".portal-navigation").click()
+        except:
+            try:
+                self.click(self.page.get_by_text("更多")) 
+            except:
+                elment_handle =self.page.wait_for_selector(self.locator_page_in_panoramic_navigation_more, state="visible", timeout=8000)
+                elment_handle.click()
 
     @allure.step("全景导航：点击弹出框【收藏更多导航】")
     def click_panoramic_navigation_page_get_more(self):
         """
             全景导航：点击弹出框【收藏更多导航】
         """
-        self.click(locator=self.locator_page_in_panoramic_navigation_get_more)
+        try:
+            elment_handle =self.page.wait_for_selector(self.locator_page_in_panoramic_navigation_get_more1, state="visible", timeout=8000)
+            elment_handle.click()
+        except:
+            self.click(self.page.get_by_text("添加更多导航"))
+            
 
     @allure.step("全景导航：点击弹出框【自定义导航条】")
     def click_custom_navigation(self):
@@ -87,7 +115,11 @@ class PanoramicNavigationPage(BasePage):
         """
             全景导航：点击侧边栏指定功能下的子功能，进入指定子功能页面
         """
-        locator_parent_str = self.locator_page_navigation_sidebar.format(navigation_name)
-        locator_sub_str = self.locator_page_navigation_sidebar.format(navigation_sub_name)
-        self.click(locator=locator_parent_str)
-        self.click(locator=locator_sub_str)
+        # locator_parent_str = self.locator_page_navigation_sidebar.format(navigation_name)
+        # locator_sub_str = self.locator_page_navigation_sidebar.format(navigation_sub_name)
+        # self.click(locator=locator_parent_str)
+        # self.click(locator=locator_sub_str)
+        self.click(self.page.get_by_text(navigation_name).first)
+        # element_handle = self.page.wait_for_selector("//span[text()='产品管理']", state="visible", timeout=8000)
+        self.click(self.page.get_by_text(navigation_sub_name).first)
+        # self.click("//span[text()='产品管理']")

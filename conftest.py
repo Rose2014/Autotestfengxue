@@ -82,7 +82,11 @@ def pytest_collection_modifyitems(config, items):
         if "case" in item.fixturenames:
             case = item.callspec.params["case"]
             # 判断用例是否需要执行，如果不执行则跳过
-            if not case.get("run"):
+            s = case.get("run")
+            if not isinstance(s, str):
+                s = str(s) if s is not None else "false"
+            is_run = s.lower() in ("true", "1", "t", "yes", "y")
+            if not is_run:
                 item.add_marker(pytest.mark.skip(reason="用例数据中，标记了该用例为false，不执行"))
             # 对用例数据进行处理，将关键字${key}， 与全局变量GLOBAL_VARS中的值进行替换。例如${login}， 替换成GLOBAL_VARS["login"]的值。
             item.callspec.params["case"] = data_handle(case, GLOBAL_VARS)

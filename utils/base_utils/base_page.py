@@ -6,12 +6,35 @@
 
 # 标准库导入
 import os
+import re
+import json
 from typing import Union, Pattern, Optional, Literal, AnyStr
 # 第三方库导入
 import allure
 from loguru import logger
 from playwright.sync_api import Page, Locator
 from playwright.sync_api import expect
+
+
+def _safe_locator_str(locator):
+    """
+    安全地将Locator对象转换为字符串，确保中文字符不被转义
+    """
+    if isinstance(locator, Locator):
+        # 将Locator对象转换为字符串
+        locator_str = str(locator)
+        # 尝试解码Unicode转义序列
+        try:
+            # 查找并解码所有Unicode转义序列
+            decoded_str = re.sub(r'\\u([0-9a-fA-F]{4})', 
+                               lambda x: chr(int(x.group(1), 16)), 
+                               locator_str)
+            decoded_str = decoded_str.replace("\\","",)             
+            return decoded_str
+        except:
+            # 如果解码失败，返回原始字符串
+            return locator_str
+    return str(locator)
 
 
 class BasePage:
@@ -63,14 +86,15 @@ class BasePage:
     @allure.step("--> 强制等待{timeout}秒")
     def wait(self, timeout=3):
         """
-        强制等待，官方默认单位是毫秒，这里的timeout传参默认单位是秒
+        强制等待，单位是秒\n
+        仅应用于调试目的。在生产环境中使用计时器的测试将变得不稳定。应改用网络事件、选择器可见性变化等信号作为替代方案。
         """
         logger.info(f'--> 强制等待{timeout}秒')
         self.page.wait_for_timeout(timeout * 1000)
 
     @allure.step("--> 等待页面加载，且状态为：{state}, 超时{timeout}秒")
     def wait_for_load_state(self,
-                            state: Optional[Literal["domcontentloaded", "load", "networkidle"]] = 'domcontentloaded',
+                            state: Optional[Literal["domcontentloaded", "load", "networkidle"]] = 'load',
                             timeout=30):
         """
         在页面达到所需的加载状态时返回
@@ -85,162 +109,216 @@ class BasePage:
         self.page.wait_for_load_state(state, timeout=timeout * 1000)
 
     # --------------------------------- 页面操作和交互---------------------------------#
-    @allure.step("--> 点击元素 | 元素定位：{locator}")
-    def click(self, locator: Union[str,Locator]) -> None:
+    def click(self, locator: Union[str,Locator], timeout=30) -> None:
         """
         点击操作
         :param locator: 元素定位
+        :param timeout: 超时时间，默认是30秒
         """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.info(f"--> 点击元素 | 元素定位：{locator}")
-            if isinstance(locator, str):
-                self.page.click(locator)
-            elif isinstance(locator, Locator):
-                locator.click()
-
+            # 使用安全的字符串转换函数确保中文正确显示
+            logger.info(f"--> 点击元素 | 元素定位：{safe_locator}")
+            with allure.step(f"--> 点击元素 | 元素定位：{safe_locator}"):
+                if isinstance(locator, str):
+                    self.page.click(locator)
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="visible",timeout=timeout * 1000)
+                    locator.click()
         except Exception as e:
-            logger.error(f"--> 点击元素 | 元素定位：{locator}，报错：{e}")
-            raise f"--> 点击元素 | 元素定位：{locator}，报错：{e}"
+            # 错误日志中也使用安全的字符串转换
+            logger.error(f"--> 点击元素 | 元素定位：{safe_locator}，报错：{e}")
+            raise f"--> 点击元素 | 元素定位：{safe_locator}，报错：{e}"
 
-    @allure.step("--> checkbox勾选元素 | 元素定位： {locator}")
-    def check(self, locator: Union[str,Locator]) -> None:
+    def check(self, locator: Union[str,Locator], timeout=30) -> None:
         """
         勾选checkbox
         :param locator: 元素定位
+        :param timeout: 超时时间，默认是30秒
         """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.info(f"--> checkbox勾选元素 | 元素定位：{locator}")
-            if isinstance(locator, str):
-                self.page.check(locator)
-            elif isinstance(locator, Locator):
-                locator.check()
+            logger.info(f"--> checkbox勾选元素 | 元素定位：{safe_locator}")
+            with allure.step(f"--> checkbox勾选元素 | 元素定位：{safe_locator}"):
+                if isinstance(locator, str):
+                    self.page.check(locator, timeout=timeout * 1000)
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="visible",timeout=timeout * 1000)
+                    locator.check()
         except Exception as e:
-            logger.error(f"--> checkbox勾选元素 | 元素定位：{locator}，报错：{e}")
-            raise f"--> checkbox勾选元素 | 元素定位：{locator}，报错：{e}"
+            logger.error(f"--> checkbox勾选元素 | 元素定位：{safe_locator}，报错：{e}")
+            raise f"--> checkbox勾选元素 | 元素定位：{safe_locator}，报错：{e}"
 
-    @allure.step("--> checkbox取消勾选元素 | 元素定位： {locator}")
-    def uncheck(self, locator: Union[str,Locator]) -> None:
+    def uncheck(self, locator: Union[str,Locator], timeout=30) -> None:
         """
         取消勾选checkbox
         :param locator: 元素定位
+        :param timeout: 超时时间，默认是30秒
         """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.info(f"--> checkbox取消勾选元素 | 元素定位： {locator}")
-            if isinstance(locator, str):
-                self.page.uncheck(locator)
-            elif isinstance(locator, Locator):
-                locator.uncheck()
+            logger.info(f"--> checkbox取消勾选元素 | 元素定位： {safe_locator}")
+            with allure.step(f"--> checkbox取消勾选元素 | 元素定位： {safe_locator}"):
+                if isinstance(locator, str):
+                    self.page.uncheck(locator, timeout=timeout * 1000)
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="visible",timeout=timeout * 1000)
+                    locator.uncheck()
         except Exception as e:
-            logger.error(f"--> checkbox取消勾选元素 | 元素定位：{locator}，报错：{e}")
-            raise f"--> checkbox取消勾选元素 | 元素定位： {locator}，报错：{e}"
+            logger.error(f"--> checkbox取消勾选元素 | 元素定位：{safe_locator}，报错：{e}")
+            raise f"--> checkbox取消勾选元素 | 元素定位： {safe_locator}，报错：{e}"
 
-    @allure.step("--> 鼠标悬浮在元素上，元素定位： {locator}")
-    def hover(self, locator: Union[str,Locator]) -> None:
+    def hover(self, locator: Union[str,Locator], timeout=30) -> None:
         """
         悬浮在某元素上
         :param locator: 元素定位
+        :param timeout: 超时时间，默认是30秒
         """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.info(f"--> 鼠标悬浮在元素上，元素定位： {locator}")
-            if isinstance(locator, str):
-                self.page.hover(locator)
-            elif isinstance(locator, Locator):
-                locator.hover()
+            logger.info(f"--> 鼠标悬浮在元素上，元素定位： {safe_locator}")
+            with allure.step(f"--> 鼠标悬浮在元素上，元素定位： {safe_locator}"):
+                if isinstance(locator, str):
+                    self.page.hover(locator, timeout=timeout * 1000)
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="visible",timeout=timeout * 1000)
+                    locator.hover()
         except Exception as e:
-            logger.error(f"--> 鼠标悬浮在元素上 | 元素定位：{locator}，报错：{e}")
-            raise f"--> 鼠标悬浮在元素上 | 元素定位： {locator}，报错：{e}"
+            logger.error(f"--> 鼠标悬浮在元素上 | 元素定位：{safe_locator}，报错：{e}")
+            raise f"--> 鼠标悬浮在元素上 | 元素定位： {safe_locator}，报错：{e}"
 
-    @allure.step("--> 聚焦定位元素，元素定位： {locator}")
-    def focus(self, locator:Union[str,Locator]) -> None:
+    def focus(self, locator:Union[str,Locator], timeout=30) -> None:
         """ 聚焦定位元素 """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.debug(f'--> 聚焦定位元素，元素定位： {locator}')
-            if isinstance(locator, str):
-                self.page.focus(locator)
-            elif isinstance(locator, Locator):
-                locator.focus()
+            logger.debug(f'--> 聚焦定位元素，元素定位： {safe_locator}')
+            with allure.step(f"--> 聚焦定位元素，元素定位： {safe_locator}"):
+                if isinstance(locator, str):
+                    self.page.focus(locator, timeout=timeout * 1000)
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="visible",timeout=timeout * 1000)
+                    locator.focus()
         except Exception as e:
-            logger.error(f"--> 聚焦定位元素 | 元素定位：{locator}，报错：{e}")
-            raise f"--> 聚焦定位元素 | 元素定位： {locator}，报错：{e}"
+            logger.error(f"--> 聚焦定位元素 | 元素定位：{safe_locator}，报错：{e}")
+            raise f"--> 聚焦定位元素 | 元素定位： {safe_locator}，报错：{e}"
 
-    @allure.step("--> 输入内容： {text} | 元素定位： {locator}")
-    def input(self, locator: Union[str,Locator], text: str) -> None:
+    def input(self, locator: Union[str,Locator], text: str, timeout=30) -> None:
         """
         输入内容
         :param locator: 元素定位
         :param text: 输入的内容
+        :param timeout: 超时时间，默认是30秒
         """
+        safe_locator = _safe_locator_str(locator)
+        
         try:
-            logger.info(f"--> 输入内容： {text} | 元素定位： {locator}")
-            if isinstance(locator, str):
-                self.page.fill(selector=locator, value=text)
-            elif isinstance(locator, Locator):
-                locator.fill(text)
+            logger.info(f"--> 输入内容： {text} | 元素定位： {safe_locator}")
+            with allure.step(f"--> 输入内容： {text} | 元素定位： {safe_locator}"):
+                if isinstance(locator, str):
+                    self.page.fill(selector=locator, value=text, timeout=timeout * 1000)
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="visible",timeout=timeout * 1000)
+                    locator.fill(value=text)
         except Exception as e:
-            logger.error(f"--> 输入内容： {text} | 元素定位： {locator}， 报错：{e}")
-            raise f"--> 输入内容： {text} | 元素定位： {locator}， 报错：{e}"
+            logger.error(f"--> 输入内容： {text} | 元素定位： {safe_locator}， 报错：{e}")
+            raise f"--> 输入内容： {text} | 元素定位： {safe_locator}， 报错：{e}"
 
-    @allure.step("--> 键盘键入内容： {text} | 元素定位： {locator}")
-    def type(self, locator: Union[str,Locator], text: str) -> None:
+
+    def type(self, locator: Union[str,Locator], text: str, timeout=30) -> None:
         """
         一个字符一个字符的输入,模拟键盘的操作，键入内容
         :param locator: 元素定位
         :param text: 输入的内容
+        :param timeout: 超时时间，默认是30秒
         """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.info(f"--> 键盘键入内容： {text} | 元素定位： {locator}")
-            if isinstance(locator, str):
-                self.page.type(selector=locator, text=text)
-            elif isinstance(locator, Locator):
-                locator.type(text)
+            logger.info(f"--> 键盘键入内容： {text} | 元素定位： {safe_locator}")
+            with allure.step(f"--> 键盘键入内容： {text} | 元素定位： {safe_locator}"):
+                if isinstance(locator, str):
+                    self.page.type(selector=locator, text=text, timeout=timeout * 1000)
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="visible",timeout=timeout * 1000)
+                    locator.type(text)  
         except Exception as e:
-            logger.error(f"--> 键盘键入内容： {text} | 元素定位： {locator}， 报错：{e}")
-            raise f"--> 键盘键入内容： {text} | 元素定位： {locator}， 报错：{e}"
+            logger.error(f"--> 键盘键入内容： {text} | 元素定位： {safe_locator}， 报错：{e}")
+            raise f"--> 键盘键入内容： {text} | 元素定位： {safe_locator}， 报错：{e}"
 
-    @allure.step("--> 清除元素内容，元素定位： {locator}")
-    def clear(self, locator: Union[str,Locator]) -> None:
+    def clear(self, locator: Union[str,Locator], timeout=30) -> None:
+        """
+        清除元素内容
+        :param locator: 元素定位
+        :param timeout: 超时时间，默认是30秒
+        """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.info(f'--> 清除元素内容，元素定位： {locator}')
-            if isinstance(locator, str):
-                self.page.locator(locator).click()
-                self.page.locator(locator).clear()
-            elif isinstance(locator, Locator):
-                locator.click()
-                locator.clear()
+            logger.info(f'--> 清除元素内容，元素定位： {safe_locator}')
+            with allure.step(f"--> 清除元素内容，元素定位： {safe_locator}"):
+                if isinstance(locator, str):
+                    self.page.fill(locator,"",timeout=timeout * 1000)
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="visible",timeout=timeout * 1000)
+                    locator.fill("")
 
         except Exception as e:
-            logger.error(f"--> 清除元素内容 | 元素定位： {locator}， 报错：{e}")
-            raise f"--> 清除元素内容 | 元素定位： {locator}， 报错：{e}"
+            logger.error(f"--> 清除元素内容 | 元素定位： {safe_locator}， 报错：{e}")
+            raise f"--> 清除元素内容 | 元素定位： {safe_locator}， 报错：{e}"
 
-    @allure.step("--> 选择选项： {option} | 元素定位： {locator}")
-    def select_option(self, locator: Union[str,Locator], option: str) -> None:
+    def select_option(self, locator: Union[str,Locator], option: Union[str,list[str],int], timeout=30) -> None:
         """
         选择option
         :param locator: 元素定位
         :param option: 选项内容
+        :param timeout: 超时时间，默认是30秒
+        :这种方法会等待遇到与指定选择器相匹配的元素，会等待完成相关的可操作性检查，会一直等待直到<select>元素中包含了所有指定的选项，
+        然后才会选中这些选项。如果目标元素并非<select>元素，那么这种方法会抛出错误；不过，如果该元素位于某个带有关联控件的<label>元素内部，
+        那么就会使用该关联控件来代替<select>元素进行操作。该方法会返回那些已被成功选中的选项值所组成的数组，并且会在所有指定的选项都被选中后触发“变化事件”及“输入事件”
+        :
+        ```
+        py
+        # 根据值或标签进行单选匹配
+        select_option(\"select#colors\", \"blue\")
+        # 根据标签进行单选匹配
+        select_option(\"select#colors\", label=\"blue\")
+        # 根据标签下标单选匹配
+        select_option(\"select#colors\", index=1)
+        # 多选匹配
+        select_option(\"select#colors\", value=[\"red\", \"green\", \"blue\"])
+        '''
         """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.info(f"--> 选择选项： {option} | 元素定位： {locator}")
-            if isinstance(locator, str):
-                self.page.select_option(selector=locator, value=option)
-            elif isinstance(locator, Locator):
-                locator.select_option(option)
-
+            logger.info(f"--> 选择选项： {option} | 元素定位： {safe_locator}")
+            with allure.step(f"--> 选择选项： {option} | 元素定位： {safe_locator}"):
+                if isinstance(locator, str):
+                    if isinstance(option, int):
+                        self.page.select_option(selector=locator, index=option)
+                    else:
+                        self.page.select_option(selector=locator, value=option)  
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="visible",timeout=timeout * 1000)
+                    if isinstance(option, int):
+                        locator.select_option(index=option)
+                    else:
+                        locator.select_option(value=option)           
         except Exception as e:
-            logger.error(f"--> 选择选项： {option} | 元素定位： {locator}， 报错：{e}")
-            raise f"--> 选择选项： {option} | 元素定位： {locator}， 报错：{e}"
+            logger.error(f"--> 选择选项： {option} | 元素定位： {safe_locator}， 报错：{e}")
+            raise f"--> 选择选项： {option} | 元素定位： {safe_locator}， 报错：{e}"
 
-    @allure.step("--> 上传文件： {file_path} | 元素定位： {locator}")
-    def upload_file(self, locator: str, file_path: str) -> None:
+    def upload_file(self, locator: Union[str,Locator], file_path: str) -> None:
         """
         上传文件
         :param locator: 元素定位
         :param file_path: 文件路径
         """
         if os.path.isfile(file_path):
-            logger.info(f"--> 上传文件： {file_path} | 元素定位： {locator}")
-            allure.attach.file(file_path, name=file_path)
-            self.page.set_input_files(selector=locator, files=file_path)
+            safe_locator = _safe_locator_str(locator)
+            logger.info(f"--> 上传文件： {file_path} | 元素定位： {safe_locator}")
+            with allure.step(f"--> 上传文件： {file_path} | 元素定位： {safe_locator}"):
+                if isinstance(locator, str):
+                    self.page.set_input_files(selector=locator, files=file_path)
+                elif isinstance(locator, Locator):
+                    locator.set_input_files(file_path)
             self.wait(timeout=1)
         else:
             logger.error(f"ERROR --> 上传文件失败，附件未找到，请检查{file_path}下是否存在该文件")
@@ -255,21 +333,22 @@ class BasePage:
         logger.info(f"--> 执行js脚本： {js}, 可选参数：{args}")
         self.page.evaluate(js, *args)
 
-    @allure.step("--> 按{keyboard}键 | 元素定位： {locator}")
     def press(self, locator: Union[str,Locator], keyboard: str) -> None:
         """
         :param locator: 元素定位
         :param keyboard: 键
         """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.info(f"--> 按{keyboard}键 | 元素定位： {locator}")
-            if isinstance(locator, str):
-                self.page.press(locator, keyboard)
-            elif isinstance(locator, Locator):
-                locator.press(keyboard)
+            logger.info(f"--> 按{keyboard}键 | 元素定位： {safe_locator}")
+            with allure.step(f"--> 按{keyboard}键 | 元素定位： {safe_locator}"):
+                if isinstance(locator, str):
+                    self.page.press(locator, keyboard)
+                elif isinstance(locator, Locator):
+                    locator.press(keyboard)
         except Exception as e:
-            logger.error(f"--> 按{keyboard}键 | 元素定位： {locator}， 报错：{e}")
-            raise f"--> 按{keyboard}键 | 元素定位： {locator}， 报错：{e}"
+            logger.error(f"--> 按{keyboard}键 | 元素定位： {safe_locator}， 报错：{e}")
+            raise f"--> 按{keyboard}键 | 元素定位： {safe_locator}， 报错：{e}"
 
     @allure.step("--> 截图， 全屏={full_page} | 元素定位： {locator}， 图片保存路径：{path}")
     def screenshot(self, path, full_page=True, locator:str=None):
@@ -302,7 +381,6 @@ class BasePage:
             logger.error(f"ERROR --> 获取所有的元素失败 | 元素定位： {locator}，报错信息：{e} ")
             raise e
 
-    @allure.step("--> 获取元素文本值 | 元素定位： {locator}")
     def get_text(self, locator: Union[str,Locator]) -> Union[str, None]:
 
         """
@@ -310,18 +388,22 @@ class BasePage:
         :param locator: 元素定位
         :return: 文本值/None
         """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.info(f"--> 获取元素文本值 | 元素定位： {locator}")
-            text_value = ""
-            if isinstance(locator, str):
-                text_value = self.page.locator(locator).text_content()
-            elif isinstance(locator, Locator):
-                text_value =locator.text_content()
+            logger.info(f"--> 获取元素文本值 | 元素定位： {safe_locator}")
+            with allure.step(f"--> 获取元素文本值 | 元素定位： {safe_locator}"):
+                text_value = ""
+                if isinstance(locator, str):
+                    self.page.locator(locator).wait_for(state="attached")
+                    text_value = self.page.locator(locator).text_content()
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="attached")
+                    text_value =locator.text_content()
             logger.success(f"--> 获取到的文本值： {text_value}")
             allure.attach(text_value, name="text_value", attachment_type=allure.attachment_type.TEXT)
             return text_value
         except Exception as e:
-            logger.error(f"ERROR --> 获取元素文本值 | 元素定位： {locator}，报错信息：{e} ")
+            logger.error(f"ERROR --> 获取元素文本值 | 元素定位： {safe_locator}，报错信息：{e} ")
             raise e
 
     @allure.step("--> 获取所有符合定位要求的元素的文本内容 | 元素定位： {locator}")
@@ -342,7 +424,6 @@ class BasePage:
             logger.error(f"ERROR --> 获取所有符合定位要求的元素的文本内容 | 元素定位： {locator}，报错信息：{e} ")
             raise e
 
-    @allure.step("--> 根据元素的属性获取对应属性值 | 元素定位： {locator}, 属性名称：{attr_name}")
     def get_element_attribute(self, locator: Union[str,Locator], attr_name: str) -> Union[str, None]:
         """
         获取元素属性值
@@ -350,34 +431,41 @@ class BasePage:
         :param attr_name: 属性名称
         :return: 元素属性值
         """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.info(f"--> 根据元素的属性获取对应属性值 | 元素定位： {locator}, 属性名称：{attr_name}")
+            logger.info(f"--> 根据元素的属性获取对应属性值 | 元素定位： {safe_locator}, 属性名称：{attr_name}")
             attr_value = ""
-            if isinstance(locator,str):
-                attr_value = self.page.locator(locator).get_attribute(name=attr_name)
-            elif isinstance(locator, Locator):
-                attr_value = locator.get_attribute(name=attr_name)
+            with allure.step(f"--> 根据元素的属性获取对应属性值 | 元素定位： {safe_locator}, 属性名称：{attr_name}"):
+                if isinstance(locator, str):
+                    self.page.locator(locator).wait_for(state="attached")
+                    attr_value = self.page.locator(locator).get_attribute(name=attr_name)
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="attached")
+                    attr_value = locator.get_attribute(name=attr_name)
             logger.success(f"--> 获取到的属性值：{attr_value}")
             allure.attach(attr_value, name="attr_value", attachment_type=allure.attachment_type.TEXT)
             return attr_value
         except Exception as e:
-            logger.error(f"--> 获取元素属性值 | 元素定位： {locator}，报错信息：{e} ")
+            logger.error(f"--> 获取元素属性值 | 元素定位： {safe_locator}，报错信息：{e} ")
             return None
 
-    @allure.step("--> 获取元素的文本内容 | 元素定位： {locator}")
     def get_inner_text(self, locator: Union[str,Locator]) -> Union[str, None]:
         """
         获取元素的文本内容
         :param locator: 元素定位
         :return: 内部文本值
         """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.info(f"--> 获取元素的文本内容 | 元素定位： {locator}")
-            text_value = ""
-            if isinstance(locator, str):
-                text_value = self.page.inner_text(selector=locator)
-            elif isinstance(locator, Locator):
-                text_value = locator.inner_text()
+            logger.info(f"--> 获取元素的文本内容 | 元素定位： {safe_locator}")
+            with allure.step(f"--> 获取元素的文本内容 | 元素定位： {safe_locator}"):
+                text_value = ""
+                if isinstance(locator, str):
+                    self.page.locator(locator).wait_for(state="attached")
+                    text_value = self.page.inner_text(selector=locator)
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="attached")
+                    text_value = locator.inner_text()
             logger.success(f"--> 获取到的元素文本内容：{text_value}")
             allure.attach(text_value, name="text_value", attachment_type=allure.attachment_type.TEXT)
             return text_value
@@ -385,20 +473,23 @@ class BasePage:
             logger.error(f"ERROR-->获取元素的文本内容 | 元素定位： {locator}，报错信息：{e} ")
             return None
 
-    @allure.step("--> 获取元素的整个html源码内容 | 元素定位： {locator}")
     def get_inner_html(self, locator: Union[str,Locator]) -> Union[str, None]:
         """
         获取元素的整个html源码内容
         :param locator: 元素定位
         :return: html值
         """
+        safe_locator = _safe_locator_str(locator)
         try:
-            logger.info(f"--> 获取元素的整个html源码内容 | 元素定位： {locator}")
-            html_value = ""
-            if isinstance(locator, str):
-                html_value = self.page.inner_html(selector=locator)
-            elif isinstance(locator, Locator):
-                html_value = locator.inner_html()
+            logger.info(f"--> 获取元素的整个html源码内容 | 元素定位： {safe_locator}")
+            with allure.step(f"--> 获取元素的整个html源码内容 | 元素定位： {safe_locator}"):
+                html_value = ""
+                if isinstance(locator, str):
+                    self.page.locator(locator).wait_for(state="attached")
+                    html_value = self.page.inner_html(selector=locator)
+                elif isinstance(locator, Locator):
+                    locator.wait_for(state="attached")
+                    html_value = locator.inner_html()
             logger.success(f"--> 获取元素的整个html值：{html_value}")
             allure.attach(html_value, name="html_value", attachment_type=allure.attachment_type.TEXT)
             return html_value
@@ -483,10 +574,11 @@ class BasePage:
         :param locator: 元素定位
         """
         logger.info(f"--> 断言 | 验证元素被可见 | 元素定位： {locator}")
-        elem = locator
+        
         if isinstance(locator,str):
-            elem = self.page.locator(locator)
-        expect(elem).to_be_visible()
+            expect(self.page.locator(locator)).to_be_visible()
+        else:
+            expect(locator).to_be_visible()
 
     # --------------------------------- 断言（常用的断言方法） ---------------------------------#
     """

@@ -27,6 +27,11 @@ class TestModuleType:
 
     @pytest.fixture(autouse=True)
     def setup_teardown_for_each(self,user_page: Page):
+        """
+        前置条件：
+        1. 系统管理员账号已登录
+        2. 进入流程设计-流程模板页面
+        """
         logger.info("\n---------------Start: 开始测试-------------\n")
         self.user_page = user_page
         self.flow_module_page = FlowModulePage(self.user_page)
@@ -37,7 +42,7 @@ class TestModuleType:
     @pytest.mark.parametrize("case", cases["create_and_delete_module_type"], ids=lambda x: x["title"])
     def test_001_create_and_delete_module_type(self,case):
         """
-        测试-流程设计-流程模板-流程类型（新建、删除）
+        在CBB应用下创建流程类型、删除流程类型
         """
         self.flow_module_page.click_create_module_type_button()
         self.flow_module_page.input_module_type_name(case.get("moduleTypeName"))

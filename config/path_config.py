@@ -2,7 +2,7 @@
 # @Version: Python 3.9
 # @File    : path_config.py
 # @Software: PyCharm
-# @Desc: 项目相关路径
+# @Desc: 项目相关路径配置
 
 # 标准库导入
 import os
@@ -54,3 +54,9 @@ ALLURE_RESULTS_DIR = os.path.join(REPORT_DIR, "allure_results")
 
 # Allure报告，HTML测试报告目录
 ALLURE_HTML_DIR = os.path.join(REPORT_DIR, "allure_html")
+
+# 测试用例目录
+TEST_DIR = os.path.join(BASE_DIR, "testcases")
+
+# 测试用例数据目录
+TEST_DATA_DIR = os.path.join(BASE_DIR, "testdata")

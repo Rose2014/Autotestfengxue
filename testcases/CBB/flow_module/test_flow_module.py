@@ -10,6 +10,7 @@ import pytest
 from loguru import logger
 from playwright.sync_api import Page
 from pages.CBB.flow_module_page import FlowModulePage
+from utils.data_utils.faker_handle import FakerData
 
 @pytest.mark.cbb
 class TestFlowModule:
@@ -52,14 +53,70 @@ class TestFlowModule:
                 "title": "流程模板已被使用,删除模板失败",
                 "moduleTypeName": "自动化",
                 "moduleName": "自动化测试",
+                "run": False
+            }
+        ],
+        "test_005_create_flow_module_auto": [
+            {
+                "title": "发起流程",
+                "moduleTypeName": "自动化",
+                "moduleName": "测试流程转办1111",
+                "flowModuleName": f"测试流程转办1111-{time.strftime('%Y%m%d%H%M%S')}{FakerData.generate_random_int(100000,999999)}",
+                "flowModuleDesc": f"测试流程转办1111-描述-{time.strftime('%Y%m%d%H%M%S')}{FakerData.generate_random_int(100000,999999)}",
+                "run": True
+            },
+            {
+                "title": "发起流程",
+                "moduleTypeName": "自动化",
+                "moduleName": "测试流程转办1111",
+                "flowModuleName": f"测试流程转办1111-{time.strftime('%Y%m%d%H%M%S')}{FakerData.generate_random_int(100000,999999)}",
+                "flowModuleDesc": f"测试流程转办1111-描述-{time.strftime('%Y%m%d%H%M%S')}{FakerData.generate_random_int(100000,999999)}",
+                "run": True
+            },
+            {
+                "title": "发起流程",
+                "moduleTypeName": "自动化",
+                "moduleName": "测试流程转办1111",
+                "flowModuleName": f"测试流程转办1111-{time.strftime('%Y%m%d%H%M%S')}{FakerData.generate_random_int(100000,999999)}",
+                "flowModuleDesc": f"测试流程转办1111-描述-{time.strftime('%Y%m%d%H%M%S')}{FakerData.generate_random_int(100000,999999)}",
+                "run": True
+            },
+            {
+                "title": "发起流程",
+                "moduleTypeName": "自动化",
+                "moduleName": "测试流程转办1111",
+                "flowModuleName": f"测试流程转办1111-{time.strftime('%Y%m%d%H%M%S')}{FakerData.generate_random_int(100000,999999)}",
+                "flowModuleDesc": f"测试流程转办1111-描述-{time.strftime('%Y%m%d%H%M%S')}{FakerData.generate_random_int(100000,999999)}",
+                "run": True
+            },
+            {
+                "title": "发起流程",
+                "moduleTypeName": "自动化",
+                "moduleName": "测试流程转办1111",
+                "flowModuleName": f"测试流程转办1111-{time.strftime('%Y%m%d%H%M%S')}{FakerData.generate_random_int(100000,999999)}",
+                "flowModuleDesc": f"测试流程转办1111-描述-{time.strftime('%Y%m%d%H%M%S')}{FakerData.generate_random_int(100000,999999)}",
+                "run": True
+            },
+            {
+                "title": "发起流程",
+                "moduleTypeName": "自动化",
+                "moduleName": "测试流程转办1111",
+                "flowModuleName": f"测试流程转办1111-{time.strftime('%Y%m%d%H%M%S')}{FakerData.generate_random_int(100000,999999)}",
+                "flowModuleDesc": f"测试流程转办1111-描述-{time.strftime('%Y%m%d%H%M%S')}{FakerData.generate_random_int(100000,999999)}",
                 "run": True
             }
-        ]
+        ],
 
     }
 
     @pytest.fixture(autouse=True)
     def setup_teardown_for_each(self,user_page: Page):
+        """
+        前置条件：
+        1. 系统管理员账号已登录
+        2. 进入流程设计-流程模板页面
+        3. 已存在流程类型“自动化”
+        """
         logger.info("\n---------------Start: 开始测试-------------\n")
         self.user_page = user_page
         self.flow_module_page = FlowModulePage(self.user_page)
@@ -68,9 +125,9 @@ class TestFlowModule:
         logger.info("\n---------------End: 结束测试-------------\n")
 
     @pytest.mark.parametrize("case", cases["create_flow_module"], ids=lambda x: x["title"])
-    def test_002_create_flow_module(self,case):
+    def test_001_create_flow_module(self,case):
         """
-        测试-流程设计-流程模板-创建流程模板
+        创建流程模板
         """
         self.flow_module_page.search_module_type(case.get("moduleTypeName"))
         self.flow_module_page.click_module_type(case.get("moduleTypeName"))
@@ -78,7 +135,7 @@ class TestFlowModule:
         self.flow_module_page.check_flow_module_exist(case.get("moduleName"))
 
     @pytest.mark.parametrize("case", cases["create_new_flow"], ids=lambda x: x["title"])
-    def test_003_create_new_flow(self, case):
+    def test_002_create_new_flow(self, case):
         """
         测试-流程设计-流程模板-发起简单流程
         """
@@ -89,7 +146,7 @@ class TestFlowModule:
                                               case.get("flowModuleDesc"))
 
     @pytest.mark.parametrize("case", cases["disable_flow_module"], ids=lambda x: x["title"])
-    def test_004_disable_flow_module(self,case):
+    def test_003_disable_flow_module(self,case):
         """
         测试-流程设计-流程模板-禁用流程模板
         """
@@ -100,7 +157,7 @@ class TestFlowModule:
         self.flow_module_page.disable_flow_module(case.get("moduleName"))
     
     @pytest.mark.parametrize("case", cases["delete_flow_module_failed"], ids=lambda x: x["title"])
-    def test_005_delete_flow_module(self,case):
+    def test_004_delete_flow_module(self,case):
         """
         测试-流程设计-流程模板-删除流程模板
         """
@@ -111,5 +168,11 @@ class TestFlowModule:
         self.flow_module_page.filter_isenable(False)
         self.flow_module_page.delete_flow_module(case.get("moduleName"))
 
-
+    @pytest.mark.parametrize("case", cases["test_005_create_flow_module_auto"], ids=lambda x: x["title"])
+    def test_005_create_flow_module_auto(self,case):
+        """
+        测试-流程设计-流程模板-删除流程模板-失败
+        """
+        self.flow_module_page.create_new_flow(case.get("moduleName"), case.get("flowModuleName"),
+                                              case.get("flowModuleDesc"))
 

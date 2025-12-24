@@ -14,10 +14,9 @@ from loguru import logger
 from playwright.sync_api import Page
 # 本地应用/模块导入
 from config.path_config import BASE_DIR
+from config.settings import  RunConfig
 from config.global_vars import GLOBAL_VARS
 from pages.login_page import LoginPage
-from pages.panoramic_navigation_page import PanoramicNavigationPage
-
 
 @pytest.fixture(scope="function")
 def user_page(new_context):
@@ -33,12 +32,13 @@ def user_page(new_context):
     if is_login_valid(users["login"]):
         context = new_context(storage_state=is_login_valid(users["login"]))
         page = context.new_page()
+        page.set_viewport_size(RunConfig.window_size)
     else:
         # 读取用户登录数据失败或者已过期，需要登录
         logger.warning("登录已过期")
         context = new_context()
         page = page_login_save_cookies(users, context.new_page())
-
+        page.set_viewport_size(RunConfig.window_size)
     yield page
 
 def is_login_valid(login):
@@ -49,7 +49,8 @@ def is_login_valid(login):
             user_json = json.load(file)
             # logger.debug(f"成功读取用户JSON文件内容{user_json}")
         expires = jsonpath(user_json, "$.cookies[?(@.name=='locale')].expires")[0]
-        if expires and time.time() < expires:
+        domain = jsonpath(user_json, "$.cookies[?(@.name=='locale')].domain")[0]
+        if expires and (time.time() < expires) and (domain in GLOBAL_VARS['host']):
             logger.debug(f"{user_json_path}，用户登录态未过期，无需重新登录，可直接使用")
             return user_json_path
         else:
@@ -69,7 +70,7 @@ def page_login_save_cookies(users, page: Page):
     LoginPage(page).login_on_page_flow(users["login"], users["password"])
     # 断言：登录成功
 
-    PanoramicNavigationPage(page).is_home_page()
+    LoginPage(page).is_home_page()
     page.wait_for_timeout(3000)
     user_json_path = os.path.join(BASE_DIR, ".auth", f"{users['login']}.json")
     # 在本地会保存登录cookies

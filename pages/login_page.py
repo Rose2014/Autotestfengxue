@@ -8,7 +8,7 @@
 import allure
 # 本地应用/模块导入
 from utils.base_utils.base_page import BasePage
-from config.global_vars import GLOBAL_VARS
+from playwright.sync_api import expect
 
 class LoginPage(BasePage):
     # 网页登录，账号、密码、登录按钮定位
@@ -25,9 +25,9 @@ class LoginPage(BasePage):
     @allure.step("访问登录页面：/erdc-login-erdcloud")
     def navigate(self):
         """
-        访问登录页面
+        登录页面
         """
-        self.visit("#/erdc-login-erdcloud")
+        self.visit("/#/erdc-login-erdcloud")
 
     def is_login_page(self):
         """
@@ -55,10 +55,10 @@ class LoginPage(BasePage):
         网页登录：点击登录按钮
         """
         self.click(locator=self.locator_page_login_btn)
-        self.wait_for_load_state()
+        self.wait_for_loading_hide()
 
     # @allure.step("等待登录页loading结束")
-    def wait_for_load_state(self):
+    def wait_for_loading_hide(self):
         self.page.wait_for_selector(self.locator_page_loading,state="hidden")
 
     # --------------------- 流程 -------------------------------------
@@ -70,4 +70,11 @@ class LoginPage(BasePage):
         self.input_username_on_page(login)
         self.input_password_on_page(password)
         self.submit_login_on_page()
-        self.page.wait_for_timeout(3000)
+        
+    @allure.step("检查是否进入主页面")
+    def is_home_page(self):
+        """
+        确定当前页面是主页面
+        """
+        # self.is_element_visible( self.page.locator(".portal-logo"))
+        expect(self.page.locator(".portal-logo")).to_be_visible(timeout=10000)
